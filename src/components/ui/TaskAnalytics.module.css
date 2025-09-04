@@ -1,0 +1,59 @@
+.smartWorkWrapper {
+    padding: 2rem;
+    background: #f9fafc;
+    border-radius: 16px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+    font-family: "Segoe UI", sans-serif;
+}
+
+.smartWorkWrapper h2 {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+    color: #2d2d2d;
+}
+
+.weekCard {
+    background: #ffffff;
+    border-left: 6px solid #007bff33;
+    margin-bottom: 1.5rem;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.04);
+}
+
+.weekCard:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.weekCard h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: #1a1a1a;
+}
+
+.weekCard ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.weekCard li {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #444;
+    list-style: disc;
+}
+
+/* Optional: status color indicators */
+.weekCard:has(h4:contains("🟢")) {
+    border-left-color: #4caf50;
+}
+
+.weekCard:has(h4:contains("🔴")) {
+    border-left-color: #f44336;
+}
+
+.weekCard:has(h4:contains("⚠️")) {
+    border-left-color: #ff9800;
+}

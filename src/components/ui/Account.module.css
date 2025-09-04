@@ -1,0 +1,295 @@
+.modal-overlay-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.modal-wrapper{
+    width: 55%;
+    height: 90%;
+    border: 1px solid #1a1a1a;
+    background: #0c0c0c;
+    border-radius: 30px;
+    position: relative;
+    padding: 10px;
+}
+
+.modal-header-image-wrapper{
+    position: relative;
+}
+
+.modal-header-cover-wrapper{
+    height:170px;
+    width: 100%;
+    background: url("../../images/enquiry-banner-bg.png") center;
+    border-radius: 20px;
+}
+
+
+.modal-header-profile-picture-parent-wrapper{
+    height: 120px;
+    width: 120px;
+    position: absolute;
+    left: 30px;
+    z-index: 1000;
+    bottom: 7%;
+    transform : translateY(50%);
+}
+
+.modal-header-profile-picture-wrapper{
+    height: 120px;
+    width: 120px;
+    min-height: 120px;
+    min-width: 120px;
+    cursor: pointer;
+    border-radius: 50%;
+    background: white;
+    border: 6px solid #0c0c0c;
+    object-fit: cover;
+}
+
+
+.verified-tick {
+    position: absolute;
+    right: 0%;
+    bottom:0%;
+    z-index: 2000;
+    height: 25px;
+    background: #0c0c0c;
+    border-radius: 50%;
+    border: 4px solid #0c0c0c;
+}
+
+
+.modal-body{
+    margin-left: 40px;
+    margin-top: 8%;
+}
+
+.user-name {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    font-family: Poppins, 'sans-serif' !important;
+}
+
+.user-email{
+    font-size: 15px;
+    margin-top: 3px;
+    font-weight: 500;
+    color: grey;
+}
+
+.profile-picture-popup{
+    padding: 5px;
+    position: absolute;
+    left: 50%;
+    border: 1px solid #282828;
+    background: #0c0c0c;
+    top: 50%;
+    border-radius: 15px;
+    z-index: 2000;
+}
+
+
+.profile-picture-popup > div{
+    white-space: nowrap;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    letter-spacing: -0.5px;
+    cursor: pointer;
+}
+
+.profile-picture-popup > div:hover{
+    background: #1c1c1c;
+    font-weight: 500;
+}
+
+
+.profile-picture-popup > div:not(:first-child){
+    margin-top: 5px;
+}
+
+.modal-body-children{
+    margin-top: 5%;
+    min-height: 500px !important;
+}
+
+
+
+
+.modal-body-children-wrapper{
+    display: flex;
+    align-items: start;
+    gap: 10px;
+}
+
+
+.modal-body-children-menu-wrapper{
+    margin-left: -10px;
+    flex: 1.25;
+    padding-right: 40px;
+}
+
+.menu-item{
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    cursor: pointer;
+    gap: 13px;
+    width: min-content;
+    min-width: 150px;
+    padding: 10px 17px;
+}
+
+.menu-item:not(:first-child){
+    margin-top: 12px;
+}
+
+.menu-item img{
+    height: 13.5px;
+}
+
+.menu-item p{
+    color: #838383 !important;
+    font-family: Overpass, sans-serif !important;
+    font-size: 15px;
+    letter-spacing: -0.25pt;
+    margin-top: 2.5px;
+}
+
+
+.menu-item:hover{
+    background: #212121;
+    animation: scale-up-down 0.75s forwards ease-in-out;
+}
+
+.menu-item:hover img{
+    filter : brightness(1000);
+}
+
+.menu-item.active:hover{
+    animation: none !important;
+}
+
+.menu-item:hover p{
+    font-weight: 500;
+    color: white !important;
+}
+
+.menu-item.active{
+    background: #171717;
+}
+
+.menu-item.active img{
+    filter : brightness(1000);
+}
+
+.menu-item.active p{
+    font-weight: 500;
+    color: white !important;
+}
+
+
+@keyframes scale-up-down{
+    0%{
+        scale : 1
+    }
+    50%{
+        scale : 1.05
+    }
+    0%{
+        scale : 1
+    }
+}
+
+.modal-body-children-content-wrapper{
+    padding: 0 50px;
+    border-left: 0.5px solid #1a1a1a;
+    flex: 4.5;
+    min-height: 500px !important;
+}
+
+.close-icon{
+    position: absolute;
+    z-index: 2000;
+    top: 30px;
+    right: 30px;
+    height: 20px;
+    cursor: pointer;
+}
+
+
+/*Profile Setting Form Starts*/
+
+.profile-form{
+
+}
+
+
+.form-group{}
+
+.form-group:not(:first-child){
+    margin-top: 25px;
+}
+
+.form-group label{
+    color: #c9c9c9;
+    margin-left: 5px;
+    font-size: 13px;
+}
+
+.form-group input::placeholder{
+    font-size: 15px !important;
+    color: grey !important;
+}
+.input-group-wrapper{
+    position: relative;
+}
+
+.form-group input{
+    background: transparent;
+    border : 0.5px solid #333333;
+    font-size: 15px !important;
+    width: calc(100% - 40px);
+    padding: 12px 20px;
+    border-radius: 10px;
+    color: white !important;
+    font-family: Overpass, 'sans-serif' !important;
+    margin-top: -5px;
+}
+
+
+.form-group input:focus{
+    background: transparent;
+    border : 0.5px solid #036CFE;
+    outline: none;
+}
+
+.success-tick {
+    position: absolute;
+    height: 12px;
+    top: 40%;
+    right: 20px;
+    transform : translateY(-50%);
+}
+
+.note{
+    margin-top: 10px;
+    font-size: 13px;
+    font-family: Overpass, sans-serif !important;
+    color: grey;
+    line-height: 1.5;
+}
+
+
+/*Profile Setting Form Ends*/

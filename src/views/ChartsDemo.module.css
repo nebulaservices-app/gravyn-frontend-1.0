@@ -1,0 +1,229 @@
+.task-graph-wrapper{
+    height: 45%;
+    position: relative;
+    width: 100%;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
+}
+
+.task-graph-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.task-graph-header-flex-item:first-child .task-graph-header-title{
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: Inter, 'sans-serif';
+}
+
+.task-graph-header-today{
+    margin-top: 7px !important;
+    font-size: 14px;
+    font-family: Inter, 'sans-serif';
+    font-weight: 600;
+    width: 75%;
+    letter-spacing: -0.25px;
+}
+
+
+.task-graph-header-comparison
+{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 7px;
+    padding: 7px 10px;
+    /*border: 0.5px solid rgba(76, 175, 80, 0.5);*/
+    background-color: rgba(76, 175, 80, 0.075);
+    border-radius:5px;
+}
+
+
+.task-graph-header-comparison img{
+    height: 7px;
+}
+
+.task-graph-header-comparison p{
+    font-size: 11px;
+    color: #4CAF50;
+    font-family: Inter, 'sans-serif' !important;
+    font-weight: 500;
+}
+
+.task-graph-holder{
+    height: calc(60% - 40px);
+    width: calc(100% - 40px);
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    padding: 20px;
+}
+
+
+
+
+.graph {
+    margin: 0 auto 0;
+    height: 100%;
+    width: 90%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    position: relative;
+}
+
+
+.yRowContainer{
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.row-container{
+    position: relative;
+    width: 100%;
+}
+
+.axis{
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.07);
+}
+.row-container span{
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.75);
+    margin-left: -5%;
+}
+
+
+.bar-label{
+    position: absolute;
+    font-size: 12px;
+    font-family: Overpass, sans-serif;
+    color: white;
+    left: 50%;
+    transform : translateX(-50%);
+    bottom: -25px;
+
+}
+
+
+.barColumnContainer{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    align-items: end;
+}
+
+
+
+.each-bar{
+    position: relative;
+    opacity: 0.8;
+}
+
+.each-bar:hover .bar-interior{
+    transform : translateY(-5px) scale(1.05);
+}
+
+.bar-interior{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    transition: all 0.1s;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.bar-interior div{
+    border-radius: 10px;
+}
+
+.blocked, .pending , .completed{
+    width: 100%;
+}
+
+.blocked{
+    background-color: #FF3838 !important;
+
+}
+
+.pending{
+    background-color: #6DAAFF !important;
+
+}
+
+.completed{
+    background-color: #036CFE;
+
+}
+
+.today-highlight {
+    opacity: 1 !important;
+}
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px) !important;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+    line-height: 1.5;
+    min-width: 160px;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity: 0.95;
+    z-index: 10;
+}
+
+.tooltipHeading{
+    color: white !important;
+    margin-bottom: 10px;
+}
+
+.tool-tip-item-flex span{
+    font-family: Inter, 'sans-serif';
+}
+
+.tooltipBox {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tooltipItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.tool-tip-item-flex{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.tooltipItem span{
+    color: white !important;
+}
+
+.tooltipLabelValue{
+    display: flex;
+}
+
+.tooltipLabelValue span{
+    font-family: Overpass, 'sans-serif' !important;
+}
+
+.colorBox {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+}

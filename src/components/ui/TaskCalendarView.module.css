@@ -1,0 +1,168 @@
+.calendarWrapper {
+    color: white;
+    padding: 0px;
+    font-family: sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    height: 45px;
+}
+
+.header-i:first-child .header-pill-i p{
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    font-family: Inter , 'sans-serif';
+    color: white;
+}
+
+.header-i:last-child{
+    height: 100%;
+    border-left: var(--border-ultra-light);
+    padding-left: 20px;
+}
+
+.header-i:last-child  .header-pill-i{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    border-radius: 10px;
+    gap: 10px;
+}
+.header-i:last-child  .header-pill-i img{
+    padding: 5px;
+}
+
+.header-i:last-child  .header-pill-i p{
+    margin: 0;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: Overpass, 'sans-serif';
+}
+.header button {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0px;
+}
+
+.dayHeader {
+    background: rgba(255, 255, 255, 0.07);
+    padding: 14px 20px;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
+    font-size: 14px;
+    backdrop-filter: blur(100px);
+    position: sticky;
+    font-family: Overpass, 'sans-serif';
+    top: 0;
+    z-index: 10; /* So it stays above scrolling cells */
+
+}
+
+.dayHeader:not(:first-child){
+    border-left: var(--border-ultra-light);
+}
+
+.dayCell {
+    min-height: 150px;
+    border: var(--border-ultra-light);
+    padding: 10px;
+    position: relative;
+    overflow-y: auto;
+}
+
+.dayCell {
+    background-color: rgba(255, 255, 255, 0.005); /* default */
+}
+
+.dayCell:hover{
+    border: 0.5px solid rgba(3, 108, 254, 0.5);
+}
+
+.emptyCell {
+    background-image: repeating-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.08),
+            rgba(255, 255, 255, 0.08) 10px,
+            rgba(255, 255, 255, 0.15) 10px,
+            rgba(255, 255, 255, 0.15) 20px
+    );
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.dayCell:nth-child(14n + 2),
+.dayCell:nth-child(14n + 4),
+.dayCell:nth-child(14n + 6),
+.dayCell:nth-child(14n + 8),
+.dayCell:nth-child(14n + 10),
+.dayCell:nth-child(14n + 12),
+.dayCell:nth-child(14n + 14) {
+    background-color: rgba(255, 255, 255, 0.01);
+}
+.date {
+    font-size: 12px;
+    font-weight: 500;
+    text-align: right;
+    font-family: Inter, 'sans-serif';
+    margin-bottom: 7px;
+    color: #999;
+    margin: 0;
+}
+
+.taskList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.taskCard {
+    background-color: #e1134b;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    padding: 8px 6px;
+    font-weight: 500;
+    border-radius: 4px;
+    overflow: hidden;
+    font-family: Inter, 'sans-serif';
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.taskCard.dragging {
+    opacity: 0.6;
+    cursor: move !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    background: green !important;
+}
+
+.taskCard:focus{
+
+}
+
+.viewSelector {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: white;
+    font-size: 14px;
+    cursor: pointer;
+}

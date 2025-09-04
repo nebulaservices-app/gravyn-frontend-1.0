@@ -1,0 +1,32 @@
+.executionPulse {
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.weekCard {
+    background: white;
+    border: 1px solid #eee;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-left: 5px solid #2196f3;
+    border-radius: 8px;
+}
+
+.weekCard h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.weekCard ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.weekCard li {
+    margin-bottom: 0.4rem;
+    color: #555;
+}

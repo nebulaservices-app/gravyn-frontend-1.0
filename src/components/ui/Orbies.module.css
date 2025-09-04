@@ -1,0 +1,33 @@
+/* Orbies.module.css */
+
+/* Styles for the container */
+.star-container {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background: transparent; /* or any background color */
+}
+
+/* Styles for individual stars */
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    /* Add the animation for movement */
+    animation: moveRandomly 14s infinite linear;
+}
+
+
+
+/* Keyframes for random movement */
+@keyframes moveRandomly {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(calc(100vw - 50px), calc(100vh - 50px));
+    }
+}

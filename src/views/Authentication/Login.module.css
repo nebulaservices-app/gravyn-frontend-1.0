@@ -1,0 +1,59 @@
+.galaxy-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.login-bg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100vw;
+    opacity: 0.5;
+    height: 100vh;
+    animation: prakat 3s forwards;
+}
+
+
+@keyframes prakat {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity:0.6;
+    }
+}
+
+.parent-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+.login-modal{
+    min-height: 60vh;
+    min-width: 30vw;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.light-rays-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    pointer-events: none;
+    z-index: 3;
+    overflow: hidden;
+}
+
+.squares-canvas {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    position: absolute;
+    background: red !important;
+}

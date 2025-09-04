@@ -1,0 +1,227 @@
+.meeting-overview-wrapper{
+    height: 100%;
+    width: 100%;
+}
+
+.meeting-overview-tab-wrapper{
+    padding: 5px 25px;
+    height: calc(7% - 10px);
+    width: calc(100% - 50px);
+    /*border-bottom: var(--border-light);*/
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.meeting-overview-list-wrapper{
+    height: 92.5%;
+    width: 100%;
+
+}
+
+.m-o-flex-item-i{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.m-o-flex-item-i p{
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Overpass, 'sans-serif';
+}
+
+.tab-count-wrapper{
+    height: 20px;
+    width: 20px;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.10);
+    border-radius: 5px;
+
+}
+
+.tab-count{
+    color: white;
+    font-size: 11px;
+    font-family: Overpass, 'sans-serif';
+    /*border: var(--border-ultra-light);*/
+    font-weight: 700;
+}
+
+.m-o-flex-item-i span{
+
+}
+
+.no-meeting-wrapper{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-meeting-details-wrapper{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: -100px;
+}
+
+.no-meeting-details-wrapper img{
+    height: 50px;
+}
+
+
+.no-meeting-text{
+    font-weight: 600;
+    color: white !important;
+    margin-top: 40px !important;
+}
+
+.no-meeting-subtext{
+    width: 75%;
+    margin: 10px auto 0 !important;
+    line-height: 1.65;
+    color: grey !important;
+    text-align: center;
+    font-size: 13px;
+}
+
+.create-meet-no{
+    padding: 5px 8px;
+    border-radius: 20px;
+    cursor: pointer;
+    letter-spacing: -0.25px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    transition: all 0.25s;
+    font-size: 13px;
+    margin-top: 15px;
+    font-weight: 600;
+    font-family: Inter, 'sans-serif';
+}
+
+.create-meet-no:hover{
+    background: white;
+    color: black;
+}
+
+
+
+.meeting-list-wrapper{
+    height: 100%;
+    width: 100%;
+}
+
+.meeting-card{
+    padding: 20px 25px;
+    position: relative;
+}
+
+.action-wrapper{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+}
+
+.action-wrapper a{
+    padding: 5px 10px;
+    border-radius: 100px;
+    background: #036CFE;
+    border: none;
+    outline: none;
+    text-decoration: none;
+    color: white;
+    font-family: Inter, 'sans-serif';
+    letter-spacing: -0.5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-size: 13px;
+}
+
+.action-wrapper a:hover{
+    scale: 1.1;
+}
+
+.meeting-title-wrapper{
+    display: flex;
+    align-items: start;
+    gap: 10px;
+}
+
+
+.meeting-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.meeting-card-header {
+
+}
+
+.meeting-card-details {
+
+}
+
+.meeting-title-wrapper {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* First <p>: Title */
+.meeting-title-wrapper p:nth-child(1) {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Second <p>: Status */
+.meeting-title-wrapper p:nth-child(2) {
+    font-size: 12px;
+    color: #DE1C59;
+    background-color: rgba(222, 28, 89, 0.1);
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+/* Third <p>: Time Elapsed */
+.meeting-title-wrapper p:nth-child(3) {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: -0.15px;
+    font-family: Inter, 'sans-serif';
+}
+
+/* Description <p> below title wrapper */
+.meeting-card-details > p {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;       /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 75%;
+    margin-top: 7px;
+}
+
+/* Footer (currently empty, but styled) */
+.meeting-card-footer {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+}

@@ -1,0 +1,130 @@
+.logger-wrapper {
+    margin: auto;
+    height: calc(55%);
+    overflow: scroll;
+    width: calc(100%);
+}
+
+.logger-card-overflow-wrapper{
+    height: calc(70% - 10px);
+    overflow-y: scroll;
+    width: calc(100% - 60px);
+    padding: 5px 30px;
+}
+
+
+.logger-header{
+    margin-bottom: 30px;
+    padding-top: 20px !important;
+    padding: 0px 30px;
+    margin-left: -10px;
+}
+
+
+.logger-header .logger-header-flex:first-child p:first-child{
+    font-size: 14.5px;
+    font-weight:600;
+    font-family: Inter, 'sans-serif' !important;
+}
+
+.logger-header .logger-header-flex:first-child p:last-child{
+    font-size: 12px;
+    margin-top: 5px !important;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+.log-card {
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.log-card:not(:last-child){
+    padding-bottom:30px;
+}
+
+.header {
+
+}
+
+
+.message-wrapper{
+    margin-left: 30px;
+}
+
+
+.icon {
+    width: 20px;
+    height: 20px;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, 0%);
+    position: absolute;
+}
+
+.log-card:not(:last-child) .line-border{
+    display: block;
+    left: -0.6pt;
+}
+
+
+.actor{
+    display: none;
+    font-size: 12px;
+    font-style: oblique;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-family: Overpass, sans-serif !important;
+    margin-bottom: 5px !important;
+}
+
+.log-card .line-border{
+    height: 100%;
+    position: absolute;
+    left: 0;
+    display: none;
+    opacity: 0.3;
+    top: 0;
+}
+
+.message{
+    font-size: 13px;
+    white-space: normal;
+    line-height: 1.70;
+    margin-top: -5px;
+    font-weight: 500;
+    width: 75%;
+}
+
+.time{
+    position: absolute;
+    right: 0px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: Overpass, 'sans-serif' !important;
+    top: 0px;
+}
+
+.log-interior{
+    padding: 10px;
+    border-radius: 5px;
+    margin-left: -5px;
+    margin-top: 7px;
+    display: none;
+    background-color: rgba(255, 255, 255, 0.02);
+    border: var(--border-light);
+}
+
+.detail{
+    font-size: 11.5px;
+    letter-spacing: 0.25px !important;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+

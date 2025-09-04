@@ -1,0 +1,201 @@
+/* Main Container */
+.ganttContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Toolbar Styles */
+.toolbar {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.toolbarButton {
+    background-color: #ffffff;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin-right: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.toolbarButton:hover {
+    background-color: #f0f0f0;
+}
+
+.zoomIcon {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.viewSwitcher {
+    display: flex;
+    margin-left: auto;
+}
+
+.viewButton {
+    padding: 6px 12px;
+    border: 1px solid #d0d0d0;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.viewButton:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.viewButton:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+.viewButton:hover {
+    background-color: #f0f0f0;
+}
+
+.viewButton.active {
+    background-color: #1976d2;
+    color: white;
+    border-color: #1976d2;
+}
+
+/* Header Styles */
+.ganttHeader {
+    display: flex;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #e0e0e0;
+    overflow-x: hidden;
+}
+
+.headerSidebar {
+    min-width: 250px;
+    padding: 8px 16px;
+    font-weight: 600;
+    color: #555;
+    background-color: #f9f9f9;
+    border-right: 1px solid #e0e0e0;
+}
+
+.headerTimeline {
+    flex: 1;
+    overflow: hidden;
+}
+
+.timelineHeaders {
+    display: flex;
+    height: 100%;
+}
+
+.timelineHeaderItem {
+    padding: 8px;
+    text-align: center;
+    font-weight: 500;
+    color: #555;
+    border-right: 1px solid #e0e0e0;
+    min-width: 100px;
+}
+
+/* Body Styles */
+.ganttBody {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 250px;
+    overflow-y: auto;
+    background-color: white;
+    border-right: 1px solid #e0e0e0;
+}
+
+.taskRow {
+    padding: 8px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.taskName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.timeline {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    background-color: white;
+}
+
+/* Task Bar Styles */
+.taskBarContainer {
+    position: relative;
+    width: 100%;
+}
+
+.taskBar {
+    position: absolute;
+    height: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.taskBar:hover {
+    opacity: 0.9;
+    transform: scaleY(1.1);
+}
+
+.taskProgress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.taskLabel {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ganttContainer {
+        font-size: 14px;
+    }
+
+    .headerSidebar, .sidebar {
+        width: 180px;
+    }
+
+    .timelineHeaderItem {
+        min-width: 80px;
+    }
+}

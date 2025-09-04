@@ -1,0 +1,74 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.wrapper {
+    color: white;
+    font-family: 'Inter', sans-serif;
+    padding: 10px;
+}
+
+.statusGroup {
+    margin-bottom: 0px;
+}
+
+.statusHeader {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+}
+
+.statusHeader p {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+    color: #f0f0f0;
+    text-transform: capitalize;
+}
+
+.statusHeader span {
+    font-size: 12px;
+    background: #333;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.taskTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.taskTable th,
+.taskTable td {
+    padding: 10px 30px;
+    /*border-bottom: var(--border-ultra-light);*/
+}
+
+.taskTable th {
+    background-color: rgba(255, 255, 255, 0.02);
+    color: #c0c0c0;
+    display: none;
+    text-align: left;
+}
+
+.taskTable td {
+    font-weight: 500;
+    color: #e0e0e0;
+}
+
+.taskTable tr:hover {
+    background-color: #222;
+}
+
+.taskTable td:nth-child(1){
+    width: 40%;
+}
+
+.taskTable td:nth-child(2) img{
+    height: 20px;
+    border-radius: 5px;
+}

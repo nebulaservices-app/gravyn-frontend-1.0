@@ -1,0 +1,74 @@
+.project-updates-content{
+    margin-top: 25px;
+}
+
+.section-summary{
+    width: 100%;
+}
+
+
+.project-update-visual > div:not(:first-child){
+    margin-top: 20px;
+}
+
+.section-summary h1 , h2 , h3, h4 , h5 , h6{
+    font-size: 12px;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 9px;
+    font-family: Inter, 'sans-serif' !important;
+}
+
+.section-summary div p{
+    font-size: 12.5px !important;
+    font-weight: 500 !important;
+    color: #F8F8FF !important;
+    line-height: 1.5;
+}
+
+.section-summary div p strong,
+.section-summary div ul li strong{
+    font-weight: 500 !important;
+
+}
+
+.section-summary div ul li{
+    font-size: 13.25px;
+    font-weight: 500 !important;
+    color: #F5F5F5 !important;
+    line-height: 1.65;
+    list-style: none;
+}
+
+.section-summary div ul li:not(:first-child){
+    margin-top: 5px !important;
+}
+
+.ai-suggestion div div p{
+    font-size: 13.25px !important;
+    font-weight: 500 !important;
+    line-height: 1.65 !important;
+    list-style: none;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.ai-suggestion div div p:not(:first-child){
+    margin-top: 10px;
+}
+
+.ai-suggestion > p{
+    margin-bottom: 15px;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-weight: 600 !important;
+    width: min-content !important;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px !important;
+    /*border: var(--border-ultra-light);*/
+}
+
+.ai-suggestion > p img{
+    height: 12px;
+}

@@ -1,0 +1,46 @@
+.ganttWrapper {
+    background-color: #121212;
+    color: white;
+    padding: 16px;
+    font-family: sans-serif;
+    overflow-x: auto;
+}
+
+.headerRow, .taskRow {
+    display: flex;
+    border-bottom: 1px solid #333;
+    min-height: 40px;
+    align-items: center;
+}
+
+.taskColumn {
+    width: 200px;
+    padding-right: 10px;
+    font-weight: bold;
+}
+
+.timeline {
+    display: flex;
+    flex-grow: 1;
+    position: relative;
+}
+
+.timelineCell {
+    width: 20px;
+    font-size: 10px;
+    color: #aaa;
+    text-align: center;
+}
+
+.ganttBar {
+    position: absolute;
+    height: 24px;
+    background-color: #036CFE;
+    border-radius: 4px;
+    color: white;
+    font-size: 10px;
+    text-align: center;
+    padding: 2px 4px;
+    overflow: hidden;
+    white-space: nowrap;
+}
