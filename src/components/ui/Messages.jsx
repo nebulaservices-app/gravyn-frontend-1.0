@@ -1222,7 +1222,7 @@ const Sidebar = ({ user, project, rooms, activeRoomId, setActiveRoomId, setActiv
 
       {/* Quick Actions */}
       <nav className={styles.quickActions}>
-        <div className={styles.actionBtn}><img src={kario_message}/><p>Kairo Assistant </p></div>
+        <div className={styles.actionBtn}><img src={kario_message}/><p>Kairo Assistant</p></div>
         <div className={styles.actionBtn}><img src={drafts}/><p>Drafts</p></div>
         <div className={styles.actionBtn}><img src={saved}/><p>Saved Items</p></div>
         <div className={styles.actionBtn}><img src={mentions}/><p>Mentions</p></div>

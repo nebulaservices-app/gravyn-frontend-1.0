@@ -211,12 +211,12 @@
 }
 
 .dashboard-main-i-header-details-text p:last-child {
-    font-size: 12.35px;
+    font-size: 0.75em;
     width: 35vw;
     /*color: rgba(255, 255, 255, 0.5);*/
-    color: #F0F0F0;
+    color: #ffffff7e;
     line-height: 1.75;
-    font-weight: 500;
+    font-weight: 450;
     margin-top: 7px;
     display: -webkit-box;
     -webkit-line-clamp: 2;      /* Show only 2 lines */

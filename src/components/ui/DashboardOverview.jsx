@@ -255,12 +255,12 @@ const DashboardOverview = () => {
                 <div className={styles['dashboard-main-wrapper']}>
                     <div className={styles['dashboard-main-i-wrapper']}>
 
-                        <div className={styles['dashboard-main-i-notification-wrapper']}>
+                        {/* <div className={styles['dashboard-main-i-notification-wrapper']}>
                             <div className={styles['notification-img-wrapper']}>
                                                             <img src={gitlab}/>
                             </div>
                             <p>2 High severity & Critical issues are pulled from Gitlab</p>
-                        </div>
+                        </div> */}
                         <div className={styles['dashboard-main-i-content-wrapper']}>
 
                             <div className={styles['dashboard-main-i-header']}>

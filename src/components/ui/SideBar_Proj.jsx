@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./SideBar_Proj.module.css";
 
-// Icons
 import logo from "../../images/icons/gravyn.svg";
 import dashboard from "../../images/icons/dashboard.svg";
 import inbox from "../../images/icons/inbox.svg";
@@ -15,130 +14,286 @@ import calendar from "../../images/icons/calendar.svg";
 import files from "../../images/icons/files.svg";
 import teams from "../../images/icons/teams.svg";
 import settings from "../../images/icons/settings.svg";
-import account from "../../images/icons/account.svg";
 import help from "../../images/icons/help.svg";
 import logout from "../../images/icons/logout.svg";
 import topdown from "../../images/icons/topdown.svg";
 
-import useProjectContext from "../../hook/useProjectContext";
-
 const menuStructure = [
-    {
-        title: null,
-        items: [
-            { label: "Dashboard", icon: dashboard, path: "/app/project/68159219cdb8524689046498/overview" },
-            { label: "My Inbox", icon: inbox, path: "/app/project/68159219cdb8524689046498/inbox" },
-            { label: "Project Updates", icon: notes, path: "/app/project/68159219cdb8524689046498/updates" },
-        ]
-    },
-    {
-        title: "Planning & Execution",
-        items: [
-            { label: "Tasks", icon: tasks, path: "/app/project/68159219cdb8524689046498/tasks/overview" },
-            { label: "Issues", icon: issues, path: "/app/project/68159219cdb8524689046498/issues/overview" },
-            { label: "Milestones", icon: milestone, path: "/app/project/68159219cdb8524689046498/milestones" },
-        ]
-    },
-    {
-        title: "Collaboration",
-        items: [
-            { label: "Messages", icon: messages, path: "/app/project/68159219cdb8524689046498/messages/" },
-            { label: "Calendar & Scheduling", icon: calendar, path: "/app/project/68159219cdb8524689046498/calendar-schedule" },
-            { label: "Files & Documents", icon: notes, path: "/project/files" },
-            { label: "Team & Roles", icon: teams, path: "/app/project/68159219cdb8524689046498/collaborate" },
-        ]
-    }
+  {
+    title: null,
+    items: [
+      { label: "Dashboard", icon: dashboard, path: "/app/project/68159219cdb8524689046498/overview" },
+      { label: "My Inbox", icon: inbox, path: "/app/project/68159219cdb8524689046498/inbox" },
+      { label: "Project Updates", icon: notes, path: "/app/project/68159219cdb8524689046498/updates" },
+    ],
+  },
+  {
+    title: "Planning & Execution",
+    items: [
+      { label: "Tasks", icon: tasks, path: "/app/project/68159219cdb8524689046498/tasks/overview" },
+      { label: "Issues", icon: issues, path: "/app/project/68159219cdb8524689046498/issues/overview" },
+      { label: "Milestones", icon: milestone, path: "/app/project/68159219cdb8524689046498/milestones" },
+    ],
+  },
+  {
+    title: "Collaboration",
+    items: [
+      {
+        label: "Messages",
+        icon: messages,
+        path: "/app/project/68159219cdb8524689046498/messages/",
+      },
+      {
+        label: "Calendar & Scheduling",
+        icon: calendar,
+        path: "/app/project/68159219cdb8524689046498/calendar-schedule",
+        subItems: [
+          {
+            label: "Calendar",
+            path: "/app/project/68159219cdb8524689046498/calendar-schedule",
+          },
+          {
+            label: "Timeline",
+            path: "/app/project/68159219cdb8524689046498/timeline",
+          },
+          {
+            label: "Workload Analysis",
+            path: "/app/project/68159219cdb8524689046498/calendar-schedule/workload",
+          },
+        ],
+      },
+      { label: "Files & Documents", icon: files, path: "/project/files" },
+      {
+        label: "Team & Roles",
+        icon: teams,
+        path: "/app/project/68159219cdb8524689046498/collaborate",
+      },
+    ],
+  },
 ];
 
 const bottomMenu = [
-    { label: "Settings", icon: settings, path: "/settings" },
-    { label: "Help & Support", icon: help, path: "/help" },
-    { label: "Log out", icon: logout, path: "/logout" },
+  // { label: "Settings", icon: settings, path: "/settings" },
+  // { label: "Help & Support", icon: help, path: "/help" },
+  // { label: "Log out", icon: logout, path: "/logout" },
 ];
 
-const SideBar_Proj = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const { project } = useProjectContext();
+const MenuItem = ({ item, activePath, onClick, hasSubmenu, isOpen, onToggle, collapsed }) => {
+  const isActive =
+    activePath === item.path ||
+    (hasSubmenu && item.subItems.some((sub) => sub.path === activePath));
 
-    const isActive = (path) => location.pathname === path;
+  return (
+    <div>
+      <div
+        className={`${styles["menu-item-i"]} ${isActive ? styles["active"] : ""}`}
+        onClick={() => (hasSubmenu ? onToggle(item.label) : onClick(item.path))}
+        role="button"
+        tabIndex={0}
+        onKeyPress={() => (hasSubmenu ? onToggle(item.label) : onClick(item.path))}
+        title={collapsed ? item.label : undefined}
+      >
+        <img src={item.icon} alt={`${item.label} icon`} />
+        {!collapsed && <p>{item.label}</p>}
+        {hasSubmenu && !collapsed && (
+          <span className={styles["submenu-toggle"]}>{isOpen ? "-" : "+"}</span>
+        )}
+      </div>
 
-    const handleClick = (path) => {
-        if (path === "/logout") {
-            // Add logout logic here
-            console.log("Logging out...");
-        } else {
-            navigate(path);
-        }
-    };
-
-    return (
-        <div className={styles['sidebar-wrapper']}>
-            <div className={styles['sidebar-proj-header-wrapper']}>
-                <div className={styles['sidebar-flex']}>
-                    <div className={styles['sidebar-flex-i']}>
-                        <div className={styles['sidebar-logo-wrapper']}>
-                            <img src={logo} alt="Logo" />
-                            <p>Gravyn</p>
-                        </div>
-                        {/*<p>{project?.name}</p>*/}
-                    </div>
-                </div>
-                <div className={styles['sidebar-flex']}>
-                    <img src={topdown} alt="Toggle" />
-                </div>
+      {hasSubmenu && isOpen && !collapsed && (
+        <div className={styles["submenu-wrapper"]}>
+          {item.subItems.map((subItem, idx) => (
+            <div
+              key={idx}
+              className={`${styles["submenu-item"]} ${
+                activePath === subItem.path ? styles["active"] : ""
+              }`}
+              onClick={() => onClick(subItem.path)}
+              role="button"
+              tabIndex={0}
+              onKeyPress={() => onClick(subItem.path)}
+            >
+              <p>{subItem.label}</p>
             </div>
-
-            <div className={styles['sidebar-proj-content-wrapper']}>
-                <div className={styles['menu-sr-wrapper']}>
-
-                    {/* Main Sections */}
-                    <div className={styles['menu-blocks-wrapper']}>
-                        {menuStructure.map((section, sIdx) => (
-                            <div className={styles['menu-jr-block-wrapper']} key={sIdx}>
-                                <div className={styles['menu-item-wrapper']}>
-                                    <p className={styles['menu-type-title']}>{section.title}</p>
-                                    <div className={styles['menu-capsule']}>
-                                        {section.items.map((item, iIdx) => (
-                                            <div
-                                                key={iIdx}
-                                                className={`${styles['menu-item-i']} ${isActive(item.path) ? styles['active'] : ""}`}
-                                                onClick={() => handleClick(item.path)}
-                                            >
-                                                <img src={item.icon} alt={item.label} />
-                                                <p>{item.label}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Bottom Section */}
-                    <div className={`${styles['menu-blocks-wrapper']} ${styles['menu-non-collapsible-block-wrapper']}`}>
-                        <div className={styles['menu-jr-block-wrapper']}>
-                            <div className={styles['menu-item-wrapper']}>
-                                <div className={styles['menu-capsule']}>
-                                    {bottomMenu.map((item, idx) => (
-                                        <div
-                                            key={idx}
-                                            className={`${styles['menu-item-i']} ${isActive(item.path) ? styles['active'] : ""}`}
-                                            onClick={() => handleClick(item.path)}
-                                        >
-                                            <img src={item.icon} alt={item.label} />
-                                            <p>{item.label}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+          ))}
         </div>
+      )}
+    </div>
+  );
+};
+
+const MenuSection = ({
+  title,
+  items,
+  activePath,
+  onClick,
+  openSubmenus,
+  toggleSubmenu,
+  collapsed,
+  collapsibleCategory = false,
+}) => {
+  const [categoryOpen, setCategoryOpen] = useState(true);
+
+  const hasSubmenuItems = items.some(
+    (item) => Array.isArray(item.subItems) && item.subItems.length > 0
+  );
+
+  const toggleCategory = () => {
+    if (collapsibleCategory && hasSubmenuItems) {
+      setCategoryOpen((prev) => !prev);
+    }
+  };
+
+  return (
+    <div className={styles["menu-jr-block-wrapper"]}>
+      <div className={styles["menu-item-wrapper"]}>
+        {title && (
+          <p
+            className={styles["menu-type-title"]}
+            style={collapsibleCategory && hasSubmenuItems ? { cursor: "pointer" } : {}}
+            onClick={toggleCategory}
+            role={collapsibleCategory && hasSubmenuItems ? "button" : undefined}
+            tabIndex={collapsibleCategory && hasSubmenuItems ? 0 : undefined}
+            onKeyPress={(e) => {
+              if (
+                collapsibleCategory &&
+                hasSubmenuItems &&
+                (e.key === "Enter" || e.key === " ")
+              ) {
+                toggleCategory();
+              }
+            }}
+          >
+            {title} {collapsibleCategory && hasSubmenuItems && (categoryOpen ? "▾" : "▸")}
+          </p>
+        )}
+        <div
+          className={styles["menu-capsule"]}
+          style={
+            collapsibleCategory && !categoryOpen
+              ? { display: "none" }
+              : undefined
+          }
+        >
+          {items.map((item, idx) => {
+            const hasSubmenu =
+              Array.isArray(item.subItems) && item.subItems.length > 0;
+            const isOpen = openSubmenus.includes(item.label);
+            return (
+              <MenuItem
+                key={idx}
+                item={item}
+                activePath={activePath}
+                onClick={onClick}
+                hasSubmenu={hasSubmenu}
+                isOpen={isOpen}
+                onToggle={toggleSubmenu}
+                collapsed={collapsed}
+              />
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SideBar_Proj = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [openSubmenus, setOpenSubmenus] = useState([]);
+  const [collapsed, setCollapsed] = useState(false);
+  const activePath = location.pathname;
+
+  const toggleSubmenu = (label) => {
+    setOpenSubmenus((prev) =>
+      prev.includes(label)
+        ? prev.filter((l) => l !== label)
+        : [...prev, label]
     );
+  };
+
+  const handleLogout = () => {
+    console.log("Logging out...");
+  };
+
+  const handleClick = (path) => {
+    if (path === "/logout") {
+      handleLogout();
+    } else {
+      navigate(path);
+    }
+  };
+
+  const handleCollapse = () => setCollapsed(prev => !prev);
+
+  return (
+    <div
+      className={`${styles["sidebar-wrapper"]} ${collapsed ? styles["collapsed"] : ""}`}
+      style={{ width: collapsed ? 60 : undefined }}
+    >
+      <div className={styles["sidebar-proj-header-wrapper"]}>
+        <div className={styles["sidebar-flex"]}>
+          <div className={styles["sidebar-flex-i"]}>
+            <div className={styles["sidebar-logo-wrapper"]}>
+              <img src={logo} alt="Gravyn Logo" />
+              {!collapsed && <p>Gravyn</p>}
+            </div>
+          </div>
+        </div>
+        <div className={styles["sidebar-flex"]}>
+          <img
+            src={topdown}
+            alt={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            style={{ cursor: "pointer", display: "block" }}
+            onClick={handleCollapse}
+          />
+        </div>
+      </div>
+
+      <div className={styles["sidebar-proj-content-wrapper"]}>
+        <div className={styles["menu-sr-wrapper"]}>
+          <div className={styles["menu-blocks-wrapper"]}>
+            {menuStructure.map((section, idx) => (
+              <MenuSection
+                key={idx}
+                title={section.title}
+                items={section.items}
+                activePath={activePath}
+                onClick={handleClick}
+                openSubmenus={openSubmenus}
+                toggleSubmenu={toggleSubmenu}
+                collapsed={collapsed}
+                collapsibleCategory={true} // Enable collapsible category here
+              />
+            ))}
+          </div>
+
+          <div
+            className={`${styles["menu-blocks-wrapper"]} ${styles["menu-non-collapsible-block-wrapper"]}`}
+          >
+            <div className={styles["menu-jr-block-wrapper"]}>
+              <div className={styles["menu-item-wrapper"]}>
+                <div className={styles["menu-capsule"]}>
+                  {bottomMenu.map((item, idx) => (
+                    <MenuItem
+                      key={idx}
+                      item={item}
+                      isActive={activePath === item.path}
+                      onClick={handleClick}
+                      collapsed={collapsed}
+                      activePath={activePath}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default SideBar_Proj;

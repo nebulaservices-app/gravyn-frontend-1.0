@@ -18,6 +18,7 @@ import InboxOverview from "./components/ui/InboxOverview";
 import ProjectUpdates from "./components/ui/ProjectUpdates";
 import ProjectMilestones from "./components/ui/ProjectMilestones";
 import TasksOverview from "./components/ui/TasksOverview";
+import SchedulingTimeline from './components/ui/SchedulingTimeline';
 
 
 function App() {
@@ -45,6 +46,8 @@ function App() {
                     <Route path="/app/project/:projectId/collaborate/" element={<ProtectedRoute element={<ProjectLayout><CollaborationSpace/></ProjectLayout>}/>} />
 
                     <Route path="/app/project/:projectId/calendar-schedule" element={<ProtectedRoute element={<ProjectLayout><CalendarScheduling/></ProjectLayout>}/>} />
+                    <Route path="/app/project/:projectId/timeline" element={<ProtectedRoute element={<ProjectLayout><SchedulingTimeline/></ProjectLayout>}/>} />
+
                     <Route path="/app/project/:projectId/overview" element={<ProtectedRoute element={<ProjectLayout><DashboardOverview/></ProjectLayout>}/>} />
                     <Route path="/app/project/:projectId/inbox" element={<ProtectedRoute element={<ProjectLayout><InboxOverview/></ProjectLayout>}/>} />
                     <Route path="/app/project/:projectId/updates" element={<ProtectedRoute element={<ProjectLayout><ProjectUpdates/></ProjectLayout>}/>} />

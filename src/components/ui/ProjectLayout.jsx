@@ -984,25 +984,6 @@ const ProjectLayout = ({
     ];
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     const [driftModalOpen, setDriftModalOpen] = useState(true);
     const [currentDrift, setCurrentDrift] = useState(null);
 
@@ -1079,6 +1060,8 @@ const ProjectLayout = ({
             runDriftIQCheck();
         }
     }, [project?._id, user?._id]);
+
+
 
 
 

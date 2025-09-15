@@ -20,6 +20,8 @@ import { highlightText } from "./Kanban";
 import dropdown from "../../images/icons/dropdown.svg";
 import add from "../../images/icons/add.svg"
 
+import aitriage from "../../images/icons/aitriage.svg"
+
 
 const statusMap = {
     pending: { key: "pending", label: "Pending", icon: "", color: "#A0A0A0" },
@@ -107,6 +109,10 @@ const UniversalSpreadsheetView = ({ data, groupByKey = "status", columns = [], s
             });
         }
     };
+
+    // const handleData = (item) => {
+    //     alert(JSON.stringify(item))
+    // }
 
     // const groupOrder = Object.keys(groupedData);
     const groupOrder = (columnOrderMap[groupByKey] || []).filter((group) => groupedData[group]?.length);
@@ -202,15 +208,23 @@ const UniversalSpreadsheetView = ({ data, groupByKey = "status", columns = [], s
                                                                 <img src={severityIconMap[item.severity]}/>
                                                             </div>
                                                             <div className={styles["properties-wrapper"]}>
-                                                                <img src={typeMap[item.type]}/>
+                                                                <img src={typeMap[item.type.toLowerCase()]}/>
                                                             </div>
+                                                          
                                                             <p className={styles["item-title"]}>{highlightText(item.title, searchQuery)}</p>
+                                                        
                                                         </div>
                                                         <div className={styles["spreadsheet-row-i"]}>
-                                                            <div className={styles["properties-v2-wrapper"]}>
-                                                                {item.assignedTo?.users?.map((userId) => {
+                                                              <div className={styles["properties-v2-wrapper"]}>
+                                                               {item.meta.triaged.triaged === true  && 
+                                                                    <img src={aitriage}/> 
+                                                               }
+                                                            </div>
+
+                                                            {item.assignedTo?.users?.map((userId) => {
                                                                     const user = userMap[userId];
                                                                     return (
+                                                                        <div className={styles["properties-v2-wrapper"]}>
                                                                         <img
                                                                             key={userId}
                                                                             src={
@@ -221,13 +235,16 @@ const UniversalSpreadsheetView = ({ data, groupByKey = "status", columns = [], s
                                                                             title={user?.name || "Unknown User"}
                                                                             className={styles["user-avatar"]}
                                                                         />
+                                                                        </div>
+                                                                  
                                                                     );
-                                                                })}
-                                                            </div>
+                                                            })}
+                                                      
                                                             <div className={styles["properties-v2-wrapper"]}>
                                                                 {/*<img src={calendar}/>*/}
                                                                 <p>{formatToShortDate(item.dueDate)}</p>
                                                             </div>
+                                                          
                                                         </div>
                                                     </div>
                                                 )}
