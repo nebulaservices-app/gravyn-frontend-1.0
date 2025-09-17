@@ -87,7 +87,7 @@ const MenuItem = ({ item, activePath, onClick, hasSubmenu, isOpen, onToggle, col
     <div>
       <div
         className={`${styles["menu-item-i"]} ${isActive ? styles["active"] : ""}`}
-        onClick={() => (hasSubmenu ? onToggle(item.label) : onClick(item.path))}
+        onClick={() => (hasSubmenu ? onToggle(item.label) : onClick(item.path, item.label))}
         role="button"
         tabIndex={0}
         onKeyPress={() => (hasSubmenu ? onToggle(item.label) : onClick(item.path))}
@@ -111,7 +111,7 @@ const MenuItem = ({ item, activePath, onClick, hasSubmenu, isOpen, onToggle, col
               onClick={() => onClick(subItem.path)}
               role="button"
               tabIndex={0}
-              onKeyPress={() => onClick(subItem.path)}
+              onKeyPress={() => onClick(subItem.path , subItem.label)}
             >
               <p>{subItem.label}</p>
             </div>
@@ -198,7 +198,7 @@ const MenuSection = ({
   );
 };
 
-const SideBar_Proj = () => {
+const SideBar_Proj = ({onMenuSelect}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -218,11 +218,14 @@ const SideBar_Proj = () => {
     console.log("Logging out...");
   };
 
-  const handleClick = (path) => {
+   const handleClick = (path, label) => {
     if (path === "/logout") {
       handleLogout();
     } else {
       navigate(path);
+      if (onMenuSelect) {
+        onMenuSelect(label);  // Send the label back to parent here
+      }
     }
   };
 

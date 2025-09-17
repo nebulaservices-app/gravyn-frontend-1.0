@@ -28,6 +28,8 @@ import {getUserById} from "../../service/User/UserFetcher";
 
 import aiTriageService from "../../service/AiTriage/aiTriageService.js";
 import {SnackbarProvider, useSnackbar} from "../../context/SnackbarProvider";
+import ProjectLayoutNavBar from "../templates/ProjectLayoutNavBar.jsx"
+
 const TierModal = ({user , championTierVisibility , setChampionTierVisibility}) =>{
 
     const fireConfetti = () => {
@@ -1062,7 +1064,12 @@ const ProjectLayout = ({
     }, [project?._id, user?._id]);
 
 
+    const [menu ,setMenu] = useState("")
 
+
+    const handleMenuSelection = (menu) =>{
+        setMenu(menu)
+    }
 
 
 
@@ -1087,18 +1094,18 @@ const ProjectLayout = ({
             aiTriageService.stop?.();
         };
     }, [project?._id, project?.aiTriage?.enabled]);
-
-
+    
 
 
 
     return (
         <SnackbarProvider>
             <div className={styles['page-wrapper']}>
-                <SideBar_Proj/>
+                <SideBar_Proj onMenuSelect={handleMenuSelection}/>
                 <div className={styles['page-content-parent-wrapper']}>
                     <div className={styles['page-content-children-wrapper']}>
                         {/* NAVBAR */}
+
                         <nav className={styles['page-navbar-wrapper']}>
                             <div className={styles['navbar-flex-item']}>
                                 <div className={styles['workspace-pill']}>
@@ -1143,6 +1150,10 @@ const ProjectLayout = ({
                                 </div>
                             </div>
                         </nav>
+
+
+                        {menu !== "Messages" && <ProjectLayoutNavBar/>}
+
                         <div className={styles['project-layout-children-wrapper']}>
                             {children}
                         </div>

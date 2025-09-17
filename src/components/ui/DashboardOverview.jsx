@@ -224,33 +224,7 @@ const DashboardOverview = () => {
 
     return <>
         <div className={styles['dashboard-overview-wrapper']}>
-            <div className={styles['dashboard-nav-bar']}>
-                <div className={styles['nav-capsule']}>
-                    <div className={styles['nav-pill-i']}>
-                        <img src={allproject}/><p>All Projects</p>
-                    </div>
-                    <img src={slash}/>
-                    <div className={styles['nav-pill-i']}>
-                        <img src={projecticon}/><p>{project?.name}</p>
-                        <img
-                            onClick={toggleFav}
-                            className={styles['star']}
-                            src={isFav ? star_fav : star_nofav}
-                        />
-                        <img className={styles['dot']} src={dot}/>
-                    </div>
-                    {/*<img src={slash}/>*/}
-                    {/*<div className={styles['nav-pill-i']}>*/}
-                    {/*    <img src={warning}/><p>Project Health</p>*/}
-                    {/*</div>*/}
-                </div>
-                <div className={styles['nav-capsule']}>
-                    <div className={styles['nav-pill-i']}>
-                        <img src={kairo}/>
-                        <p>Ask Kairo</p>
-                    </div>
-                </div>
-            </div>
+    
             <div className={styles['dashboard-main']}>
                 <div className={styles['dashboard-main-wrapper']}>
                     <div className={styles['dashboard-main-i-wrapper']}>

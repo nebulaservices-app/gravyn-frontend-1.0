@@ -1,4 +1,371 @@
-.parent-wrapper{
-    width: 100%;
-    height: 100%;
+.parent-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
+
+.parent-main-wrapper {
+  width: 96%;
+  height: 100%;
+}
+
+.actionbar-wrapper {
+  width: 4%;
+  background-color: rebeccapurple;
+  height: 100%;
+  border-left: var(--border-ultra-light);
+}
+
+.timeline-scheduler {
+  width: 100%;
+  height: 100%;
+}
+
+.scheduler-header {
+  border-bottom: var(--border-ultra-light);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 12px 20px;
+}
+
+/* Gaps between different elements */
+.scheduler-header-i {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.scheduler-header-i:first-child .header-entity-i p {
+  font-size: 12.5px;
+  font-weight: 500;
+  font-family: Inter, 'sans-serif' !important;
+  color: white;
+  margin: 0;
+  letter-spacing: 0px;
+}
+
+.schedule-parent-content{
+  height: 94.5%;
+  width: 100%;
+  overflow: scroll;
+  position: relative; /* For task bars absolute positioning */
+}
+
+.scheduler-content {
+  height: 100%;
+  width: 100%;
+  position: relative; /* For task bars absolute positioning */
+}
+
+.header-entity-i {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.scheduler-header-i:last-child .header-entity-i:nth-child(1) {
+  /* no change */
+}
+
+/* Each month zone gets auto width based on its number of days */
+.zone-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: unset;
+}
+
+
+
+/* Header for each month */
+/* UPDATED: Left aligned with 20px padding */
+.zone-header {
+  height: 42px;
+  display: flex;
+  align-items: start;
+  justify-content: center; /* left aligned */
+  font-size: 12.5px;
+  flex-direction: column;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  color: white;
+  border-right: var(--border-ultra-light);
+  backdrop-filter: blur;
+  border-bottom: var(--border-ultra-light);
+  user-select: none;
+}
+
+/* Container for the days within the month */
+.zone-content {
+  display: flex;
+  height: calc(100% - 50px);
+  width: 100%;
+}
+
+/* Each day column is fixed width, full height */
+/* UPDATED: Add padding left/right so text doesn't stick */
+.zone-content-day {
+  min-width: 60px;
+  max-width: 60px;
+  height: 100%;
+  border-right: var(--border-ultra-light);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* left aligned label text */
+  justify-content: flex-start;
+  padding-left: 20px;   /* Added padding */
+  padding-right: 4px;   /* Small right padding for balance */
+  font-size: 13px;
+  color: #fff;
+  position: relative;
+  user-select: none;
+}
+
+.zone-content-day p{
+    margin-left: 20px;
+}
+
+.zone-content-day:hover {
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  color: #222;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.zone-column {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.zone-column-header {
+  height: 40px; /* fixed header height */
+  padding-left: 20px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #bbc1ee;
+  display: flex;
+  align-items: center;
+  border-bottom: var(--border-ultra-light);
+  user-select: none;
+  position: relative;
+}
+
+
+.zone-column-header::before{
+    position: absolute;
+    content: '';
+    left: 0;
+    bottom: 10px;
+    height: 10px;
+    width: 0.5px;
+    background-color: white;
+}
+
+
+
+
+.zone-column-header:last-child::after{
+      position: absolute;
+    content: '';
+    right: 0;
+    bottom: 0;
+    height: 10px;
+
+    width: 0.5px;
+}
+
+.zone-column-content {
+  flex: 1;
+  padding-top: 5px; /* gap below header */
+  position: relative;
+  /* content area for tasks */
+}
+
+.zone-column-content:not(.zone-column-content.weekend){
+  border-right: 0.5px dashed rgba(255, 255, 255, 0.14);
+}
+
+.task-card p{
+    font-size: 13px;
+    font-weight: 500;
+    color: white;
+    font-family: Inter;
+}
+
+
+.today-line {
+  position: absolute;
+  top: 100px; /* match with task overlay top */
+  width: 2px;
+  background-color: #a681ff;
+  opacity: 0.75;
+  z-index: 15;
+  pointer-events: none;
+  user-select: none;
+  left: 50%;
+  transition: left 0.15s ease;
+  height: 100%; /* default, or match total rows * row height */
+}
+
+.zone-column-content:hover:not(.zone-column-content.weekend){
+    border : 1px #2c00f23b solid !important;
+    border-right: none;
+    cursor: pointer;
+}
+
+.zone-column-content.weekend{
+    cursor: not-allowed;
+}
+
+
+.weekend {
+ background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 14px,
+    rgba(255, 255, 255, 0.01) 14px,
+    rgba(255, 255, 255, 0.01) 28px
+  );  /* optionally disable pointer events */
+  pointer-events: none;
+}
+
+
+.today-zone{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100%+ 10px);
+    margin-top: -10px;
+    z-index: -1;
+}
+
+.task{
+    margin-top: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.task p{
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.today-zone span{
+    flex: 1;
+    min-height: 7px;
+    max-height: 7px;
+    border-radius: 100px;
+    border: var(--border-ultra-light);
+    width: 60%;
+    background-color: #036CFE;
+}
+
+.viewport-overlay{
+    width: 80%;
+    pointer-events : fill;
+    background-color: rebeccapurple;
+}
+
+.overlay-hitbox{
+
+}
+
+.today-zone div{
+    flex: 49;
+    height: 90%;
+    width: 1px;
+    background-color: #036CFE;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.bubbleStyle {
+  background: #036CFE;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  color: #fff;
+  font-size: 18px;
+  position: absolute;
+  z-index: 10000;
+
+
+}
+
+.bubbleDot {
+  font-size: 18px;
+  line-height: 1;
+  transform: translateY(-1px);
+    backdrop-filter: blur(20px);
+
+}
+
+.bubblePill {
+  background: rgba(255,255,255,0.07);
+  border-radius: 9999px;
+  padding: 5px;
+  backdrop-filter: blur(20px) !important;
+}
+
+.bubblePillItem {
+  background: transparent;
+  color: #fff;
+  border: none;
+  padding: 7px 10px;
+  border-radius: 9999px;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bubblePillItem:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+
+.bubblePill button{
+    display: flex;
+    gap: 7px;
+}
+
+.bubblePill button img{
+    height: 11px;
+    width: 11px;
+}
+
+.bubblePill button p{
+    font-size: 11.5px;
+    white-space: nowrap;
+    font-weight: 500;
+    font-family: Inter;
+}
+

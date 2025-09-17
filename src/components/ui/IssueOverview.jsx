@@ -352,40 +352,7 @@ const IssuesOverview = ({ onCreateIssue }) => {
     return (
         <div className={styles["issue-overview-wrapper"]}>
             {/* Navigation Bar */}
-            <div className={styles["issue-nav-bar"]}>
-                <div className={styles["nav-capsule"]}>
-                    <div className={styles["nav-pill-i"]}>
-                        <img src={allproject} /><p>All Projects</p>
-                    </div>
-                    <img src={slash} />
-                    <div className={styles["nav-pill-i"]}>
-                        <img src={projecticon} /><p>{project?.name}</p>
-                        <img onClick={toggleFav} className={styles["star"]} src={isFav ? star_fav : star_nofav} />
-                        <img className={styles["dot"]} src={dot} />
-                    </div>
-                    <img src={slash} />
-                    <div className={styles["nav-pill-i"]}>
-                        <img src={warning} /><p>Issues</p>
-                    </div>
-                </div>
-                <div className={styles["nav-capsule"]}>
-                    {/*<div className={styles["nav-pill-i"]}>*/}
-                    {/*    <img src={triage} />*/}
-                    {/*    <p>AITriage</p>*/}
-                    {/*    <div*/}
-                    {/*        onClick={toggleTriage}*/}
-                    {/*        className={`${styles["toggle-wrapper"]} ${styles[toggleActiveTriage ? "active" : ""]}`}*/}
-                    {/*    >*/}
-                    {/*        <div className={styles["switch"]}>*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
-                    <div className={styles["nav-pill-i"]}>
-                        <img src={kairo} />
-                        <p>Ask Kairo</p>
-                    </div>
-                </div>
-            </div>
+  
 
             {/* Main Body */}
             <div className={styles["issue-main"]}>

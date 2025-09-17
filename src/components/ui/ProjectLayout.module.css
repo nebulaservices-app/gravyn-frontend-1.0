@@ -19,7 +19,7 @@
 .page-content-children-wrapper{
     height: 100%;
     width: 100%;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.025);
     /*background: rgba(255, 255, 255, 0.035);*/
     /*background: rgba(255, 255, 255, 0.015);*/
     overflow-y: hidden;
@@ -51,6 +51,7 @@
 .page-main-content-wrapper{
     height: calc(93%);
     width: 100%;
+    overflow: hidden;
 }
 
 .navbar-flex-item{

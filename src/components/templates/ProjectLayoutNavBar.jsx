@@ -38,7 +38,7 @@ const MenuItemFactory = ({ type, project, isFav, toggleFav, onClick }) => {
             alt={isFav ? "Favorite" : "Not Favorite"}
             style={{ cursor: "pointer" }}
           />
-          <img className={styles["dot"]} src={dot} alt="Dot" />
+          {/* <img className={styles["dot"]} src={dot} alt="Dot" /> */}
         </div>
       );
 
@@ -98,8 +98,6 @@ const ProjectLayoutNavBar = () => {
           toggleFav={toggleFav}
           onClick={handleProjectClick}
         />
-        <img src={slash} alt="Separator" />
-        <MenuItemFactory type="issues" onClick={handleIssuesClick} />
 
       </div>
 
@@ -107,7 +105,7 @@ const ProjectLayoutNavBar = () => {
 
       <div className={styles["nav-capsule"]}>
 
-        {selectedMenu === "timeline" &&  <MenuItemFactory type="task-timeline" onClick={handleAskKairoClick} />}
+        {/* {selectedMenu === "timeline" &&  <MenuItemFactory type="task-timeline" onClick={handleAskKairoClick} />} */}
         <MenuItemFactory type="askKairo" onClick={handleAskKairoClick} />
       </div>
     </div>
