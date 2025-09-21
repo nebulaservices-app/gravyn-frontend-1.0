@@ -5,7 +5,7 @@
 
 
 :root{
-    --sidebar-width-percentage : 14%;
+    --sidebar-width-percentage : 16%;
     --border-light : 0.57px solid rgba(255, 255, 255, 0.095);
     --border-ultra-light : 0.57px solid rgba(255, 255, 255, 0.095);
 }

@@ -680,21 +680,9 @@ const Kanban = ({
                                                             className={styles["task-card"]}
                                                             onClick={() => onCardClick(item)}
                                                         >
-                                                            <div className={styles["task-details"]}>
-                                                                <p className={styles["task-title"]}>
-                                                                    {highlightText(item[titleKey], searchQuery)}
-                                                                </p>
-                                                                <p className={styles["task-description"]}>
-                                                                    {highlightText(item[descriptionKey], searchQuery)}
-                                                                </p>
-                                                            </div>
 
-                                                            <div className={styles['task-header']}>
-                                                                {item.type && typeIconMap[safeEntity][item.type.toLowerCase()] && (
-                                                                    <div className={styles['task-type-wrapper']}>
-                                                                        <img src={typeIconMap[safeEntity][item.type.toLowerCase()]} alt={item.type} />
-                                                                    </div>
-                                                                )}
+                                                                          <div className={styles['task-header']}>
+                                                           
                                                                 {item[levelProperty] && (
                                                                     <div className={styles["task-severity-wrapper"]}>
                                                                         <img
@@ -720,6 +708,11 @@ const Kanban = ({
                                                                         />
                                                                     </div>
                                                                 )}
+                                                                     {item.type && typeIconMap[safeEntity][item.type.toLowerCase()] && (
+                                                                    <div className={styles['task-type-wrapper']}>
+                                                                        <img src={typeIconMap[safeEntity][item.type.toLowerCase()]} alt={item.type} />
+                                                                    </div>
+                                                                )}
                                                                 {item.dueDate && (
                                                                     <div className={styles['task-duedate-wrapper']}>
                                                                         <p>{formatToShortDate(item.dueDate)}</p>
@@ -727,6 +720,16 @@ const Kanban = ({
                                                                 )}
                                                             </div>
 
+                                                            <div className={styles["task-details"]}>
+                                                                <p className={styles["task-title"]}>
+                                                                    {highlightText(item[titleKey], searchQuery)}
+                                                                </p>
+                                                                <p className={styles["task-description"]}>
+                                                                    {highlightText(item[descriptionKey], searchQuery)}
+                                                                </p>
+                                                            </div>
+
+                                              
                                                             <div className={styles['task-footer']}>
                                                                 <div className={styles['task-footer-capsule']}>
                                                                     {item.assignedTo?.users?.length > 0 && item.assignedTo.users.map((userId) => {

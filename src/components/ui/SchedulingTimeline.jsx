@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import styles from "./SchedulingTimeline.module.css";
-import FloatingBubble from "./FloatingBubble";
 
 /* Constants */
 const MS_IN_DAY = 24 * 60 * 60 * 1000;
@@ -9,8 +8,8 @@ const MIN_COLUMN_WIDTH = 70;
 const MAX_COLUMN_WIDTH = 300;
 const ROW_HEIGHT = 64;
 const TASK_BAR_PADDING = 10;
-const TASK_SIDE_INSET = 10;
-const DEP_MARGIN = 30; // horizontal/vertical clearance for elbows
+const TASK_SIDE_INSET = 15;
+const DEP_MARGIN = 30;
 
 /* Utils */
 const addDays = (date, days) => {
@@ -18,6 +17,7 @@ const addDays = (date, days) => {
   copy.setDate(copy.getDate() + days);
   return copy;
 };
+const sameDay = (a, b) => a.toDateString() === b.toDateString();
 
 function formatDayLabel(date) {
   const dayNum = date.getDate();
@@ -92,36 +92,27 @@ function assignTaskRows(tasks, getStartIdx, getEndIdx) {
   return tasks.map(t => ({ ...t, row: typeof assignment[t.id] === "number" ? assignment[t.id] : 0 }));
 }
 
-/* Anchors: strict mid-left/right with drag translate applied */
-// Pass taskLayerTop = columnHeaderHeight to rowTop argument
+/* Anchors */
 function computeTaskAnchors(task, getStartIdx, getEndIdx, columnWidth, rowTop, frac = 0, cssMarginTop = 20) {
   const sIdx = getStartIdx(task);
   const eIdx = getEndIdx(task);
   if (sIdx === -1 || eIdx === -1) return null;
 
-  // Horizontal: exact bar position, including drag translate
   const translateX = frac * columnWidth;
   const barLeft = sIdx * columnWidth + TASK_SIDE_INSET + translateX;
   const rawWidth = (eIdx - sIdx + 1) * columnWidth - TASK_SIDE_INSET * 2;
   const barWidth = Math.max(rawWidth, columnWidth - TASK_SIDE_INSET * 2);
 
-  // Vertical: exact card middle in the SVG’s coordinate space
-  // SVG y=0 is at top of whole component; bars start at taskLayerTop = columnHeaderHeight
   const yTop = rowTop + task.row * ROW_HEIGHT + TASK_BAR_PADDING + cssMarginTop;
   const barHeight = ROW_HEIGHT - 2 * TASK_BAR_PADDING;
   const yMid = yTop + barHeight / 2;
 
-  return {
-    xLeft: barLeft,
-    xRight: barLeft + barWidth,
-    yMid
-  };
+  return { xLeft: barLeft, xRight: barLeft + barWidth, yMid };
 }
 
-  // Given a polyline as [{x,y}, ...], return a path string with 90° corners rounded by radius r.
+/* Paths */
 function roundManhattanPath(points, r = 5) {
   if (!points || points.length < 2) return "";
-  const clamp = (a,b,c) => Math.max(a, Math.min(b,c));
   const path = [];
   path.push(`M ${points[0].x} ${points[0].y}`);
   for (let i = 1; i < points.length; i++) {
@@ -129,91 +120,74 @@ function roundManhattanPath(points, r = 5) {
     const p = points[i];
     if (i < points.length - 1) {
       const pNext = points[i + 1];
-      const dx1 = p.x - pPrev.x, dy1 = p.y - pPrev.y; // incoming
-      const dx2 = pNext.x - p.x, dy2 = pNext.y - p.y; // outgoing
+      const dx1 = p.x - pPrev.x, dy1 = p.y - pPrev.y;
+      const dx2 = pNext.x - p.x, dy2 = pNext.y - p.y;
 
       const isStraight = (dx1 === 0 && dx2 === 0) || (dy1 === 0 && dy2 === 0);
-      if (isStraight) {
-        // no corner here
-        path.push(`L ${p.x} ${p.y}`);
-        continue;
-      }
+      if (isStraight) { path.push(`L ${p.x} ${p.y}`); continue; }
 
-      // Distances along each leg
       const len1 = Math.abs(dx1) + Math.abs(dy1);
       const len2 = Math.abs(dx2) + Math.abs(dy2);
       const rr = Math.min(r, Math.floor(Math.min(len1, len2) / 2));
+      const trimIn = { x: p.x - Math.sign(dx1) * rr, y: p.y - Math.sign(dy1) * rr };
+      const trimOut = { x: p.x + Math.sign(dx2) * rr, y: p.y + Math.sign(dy2) * rr };
 
-      // Trim along incoming leg
-      const trimIn = {
-        x: p.x - Math.sign(dx1) * rr,
-        y: p.y - Math.sign(dy1) * rr
-      };
-      // Trim along outgoing leg
-      const trimOut = {
-        x: p.x + Math.sign(dx2) * rr,
-        y: p.y + Math.sign(dy2) * rr
-      };
-
-      // Line to trimIn
       path.push(`L ${trimIn.x} ${trimIn.y}`);
 
-      // Determine sweep for quarter arc
-      // From dir1 -> dir2 (H then V or V then H)
-      // Right(1,0)->Down(0,1): sweep=1; Right->Up: 0; Left(-1,0)->Down: 0; Left->Up:1
-      // Up(0,-1)->Right(1,0):1; Down(0,1)->Right:0; Up->Left:0; Down->Left:1
       const sdx1 = Math.sign(dx1), sdy1 = Math.sign(dy1);
       const sdx2 = Math.sign(dx2), sdy2 = Math.sign(dy2);
       let sweep = 0;
-      if (sdx1 === 1 && sdy2 === 1) sweep = 1;         // → then ↓
-      else if (sdx1 === 1 && sdy2 === -1) sweep = 0;   // → then ↑
-      else if (sdx1 === -1 && sdy2 === 1) sweep = 0;   // ← then ↓
-      else if (sdx1 === -1 && sdy2 === -1) sweep = 1;  // ← then ↑
-      else if (sdy1 === -1 && sdx2 === 1) sweep = 1;   // ↑ then →
-      else if (sdy1 === 1 && sdx2 === 1) sweep = 0;    // ↓ then →
-      else if (sdy1 === -1 && sdx2 === -1) sweep = 0;  // ↑ then ←
-      else if (sdy1 === 1 && sdx2 === -1) sweep = 1;   // ↓ then ←
+      if (sdx1 === 1 && sdy2 === 1) sweep = 1;
+      else if (sdx1 === 1 && sdy2 === -1) sweep = 0;
+      else if (sdx1 === -1 && sdy2 === 1) sweep = 0;
+      else if (sdx1 === -1 && sdy2 === -1) sweep = 1;
+      else if (sdy1 === -1 && sdx2 === 1) sweep = 1;
+      else if (sdy1 === 1 && sdx2 === 1) sweep = 0;
+      else if (sdy1 === -1 && sdx2 === -1) sweep = 0;
+      else if (sdy1 === 1 && sdx2 === -1) sweep = 1;
 
-      // Quarter circle arc from trimIn to trimOut
       path.push(`A ${rr} ${rr} 0 0 ${sweep} ${trimOut.x} ${trimOut.y}`);
     } else {
-      // Last segment
       path.push(`L ${p.x} ${p.y}`);
     }
   }
   return path.join(" ");
 }
 
+function routeElbow(from, to, margin = DEP_MARGIN, radius = 7) {
+  const pts = [{ x: from.x, y: from.y }];
+  const stubX = from.x + margin;
+  const preX = to.x - margin;
 
-/* FS routing: non-overlap = HVH; overlap = stub -> midGapY -> preTurnX -> endY -> into B */
-function buildFsPathMidAnchors(A, B, margin = DEP_MARGIN, radius = 7) {
-  const startX = A.xRight, startY = A.yMid;
-  const endX   = B.xLeft,  endY   = B.yMid;
-
-  const preTurnX = endX - margin;
-  const stubX    = startX + margin;
-
-  const pts = [{ x: startX, y: startY }];
-  const nonOverlap = startX + margin <= preTurnX;
-
-  if (nonOverlap) {
-    // HVH
-    pts.push({ x: preTurnX, y: startY });
-    pts.push({ x: preTurnX, y: endY });
-    pts.push({ x: endX,    y: endY });
+  if (stubX <= preX) {
+    pts.push({ x: preX, y: from.y });
+    pts.push({ x: preX, y: to.y });
   } else {
-    const midGapY = (startY + endY) / 2;
-    pts.push({ x: stubX,    y: startY });
-    pts.push({ x: stubX,    y: midGapY });
-    pts.push({ x: preTurnX, y: midGapY });
-    pts.push({ x: preTurnX, y: endY });
-    pts.push({ x: endX,     y: endY });
+    const midY = (from.y + to.y) / 2;
+    pts.push({ x: stubX, y: from.y });
+    pts.push({ x: stubX, y: midY });
+    pts.push({ x: preX, y: midY });
+    pts.push({ x: preX, y: to.y });
   }
+  pts.push({ x: to.x, y: to.y });
 
   return roundManhattanPath(pts, radius);
 }
 
+function getAnchorsByType(depType, fromTask, toTask, getStartIdx, getEndIdx, columnWidth, rowTop) {
+  const A = computeTaskAnchors(fromTask, getStartIdx, getEndIdx, columnWidth, rowTop, fromTask.__frac || 0, 20);
+  const B = computeTaskAnchors(toTask, getStartIdx, getEndIdx, columnWidth, rowTop, toTask.__frac || 0, 20);
+  if (!A || !B) return null;
+  switch (depType) {
+    case "FS": return { from: { x: A.xRight, y: A.yMid }, to: { x: B.xLeft, y: B.yMid } };
+    case "SS": return { from: { x: A.xLeft, y: A.yMid }, to: { x: B.xLeft, y: B.yMid } };
+    case "FF": return { from: { x: A.xRight, y: A.yMid }, to: { x: B.xRight, y: B.yMid } };
+    case "SF": return { from: { x: A.xLeft, y: A.yMid }, to: { x: B.xRight, y: B.yMid } };
+    default: return { from: { x: A.xRight, y: A.yMid }, to: { x: B.xLeft, y: B.yMid } };
+  }
+}
 
+/* Main */
 const TimelineScheduler = () => {
   /* Timeline window */
   const projectStartDate = new Date("2024-12-25");
@@ -230,59 +204,23 @@ const TimelineScheduler = () => {
     { id: 5, label: "New microdose website", startDate: new Date("2025-07-20"), endDate: new Date("2025-09-10") },
   ]);
 
-  // Dependencies (FS only here)
-  const [dependencies] = useState([
-    { id: "d1", from: 4, to: 5, type: "FS" },
-    { id: "d2", from: 1, to: 2, type: "FS" },
-    { id: "d3", from: 3, to: 2, type: "FS" },
+  const [dependencies, setDependencies] = useState([
+    { id: "d1", from: 1, to: 2, type: "FS" },
   ]);
 
-  // Focus state
+  /* UI state */
   const [focusedDepId, setFocusedDepId] = useState(null);
   const [hoverDepId, setHoverDepId] = useState(null);
   const activeDepId = hoverDepId ?? focusedDepId;
-
-  const depEndpoints = useMemo(() => {
-    const m = new Map();
-    for (const d of dependencies) m.set(d.id, { from: d.from, to: d.to, type: d.type });
-    return m;
-  }, [dependencies]);
-
-  const activeTaskIds = useMemo(() => {
-    if (!activeDepId) return null;
-    const e = depEndpoints.get(activeDepId);
-    return e ? new Set([e.from, e.to]) : null;
-  }, [activeDepId, depEndpoints]);
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") {
-        setFocusedDepId(null);
-        setHoverDepId(null);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  /* Index lookups */
-  const getStartIdx = useCallback(
-    (task) => daysArray.findIndex(d => d.toDateString() === task.startDate.toDateString()),
-    [daysArray]
-  );
-  const getEndIdx = useCallback(
-    (task) => daysArray.findIndex(d => d.toDateString() === task.endDate.toDateString()),
-    [daysArray]
-  );
-
-  /* Layout */
-  const packedTasks = useMemo(() => assignTaskRows([...tasks], getStartIdx, getEndIdx), [tasks, getStartIdx, getEndIdx]);
-  const maxRow = useMemo(() => Math.max(...packedTasks.map(t => (typeof t.row === "number" ? t.row : 0)), 0), [packedTasks]);
-  const timelineRowsHeight = useMemo(() => (maxRow + 1) * ROW_HEIGHT, [maxRow]);
+  const [depDrag, setDepDrag] = useState(null);
+  const [creatingDepType, setCreatingDepType] = useState("FS");
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
+  const [showOutsideLabels, setShowOutsideLabels] = useState(true);
 
   /* Refs and measures */
   const schedulerContentRef = useRef(null);
   const firstColumnHeaderRef = useRef(null);
+  const timelineRef = useRef(null);
   const [visibleTrackHeight, setVisibleTrackHeight] = useState(300);
   const [columnHeaderHeight, setColumnHeaderHeight] = useState(40);
 
@@ -310,7 +248,41 @@ const TimelineScheduler = () => {
     };
   }, [daysArray.length, columnWidth]);
 
-  /* Drag with smooth visual, snap on release */
+  /* Index lookups */
+  const getStartIdx = useCallback(
+    (task) => daysArray.findIndex(d => sameDay(d, task.startDate)),
+    [daysArray]
+  );
+  const getEndIdx = useCallback(
+    (task) => daysArray.findIndex(d => sameDay(d, task.endDate)),
+    [daysArray]
+  );
+
+  /* Layout */
+  const packedTasks = useMemo(() => assignTaskRows([...tasks], getStartIdx, getEndIdx), [tasks, getStartIdx, getEndIdx]);
+  const maxRow = useMemo(() => Math.max(...packedTasks.map(t => (typeof t.row === "number" ? t.row : 0)), 0), [packedTasks]);
+  const timelineRowsHeight = useMemo(() => (maxRow + 1) * ROW_HEIGHT, [maxRow]);
+  const timelineWidth = useMemo(() => daysArray.length * columnWidth, [daysArray.length, columnWidth]);
+
+  /* Dependency paths (all types) */
+  const dependencyPaths = useMemo(() => {
+    const map = new Map(packedTasks.map(t => [t.id, t]));
+    const list = [];
+    for (const dep of dependencies) {
+      const fromTask = map.get(dep.from);
+      const toTask = map.get(dep.to);
+      if (!fromTask || !toTask) continue;
+
+      const anchors = getAnchorsByType(dep.type, fromTask, toTask, getStartIdx, getEndIdx, columnWidth, columnHeaderHeight);
+      if (!anchors) continue;
+
+      const d = routeElbow(anchors.from, anchors.to, DEP_MARGIN, 7);
+      list.push({ id: dep.id, d });
+    }
+    return list;
+  }, [dependencies, packedTasks, getStartIdx, getEndIdx, columnWidth, columnHeaderHeight]);
+
+  /* Drag states for tasks */
   const dragStateRef = useRef(null);
   const dragAnimRef = useRef(null);
 
@@ -322,7 +294,7 @@ const TimelineScheduler = () => {
       startX: e.clientX,
       originalStart: null,
       originalEnd: null,
-      columnWidthAtStart: columnWidth
+      columnWidthAtStart: columnWidth,
     };
     const t = packedTasks.find(x => x.id === taskId);
     if (t) {
@@ -330,70 +302,123 @@ const TimelineScheduler = () => {
       dragStateRef.current.originalEnd = new Date(t.endDate);
     }
     document.body.style.userSelect = "none";
+    document.body.style.cursor = edge ? "ew-resize" : "grabbing";
+    setSelectedTaskId(taskId);
   }, [columnWidth, packedTasks]);
 
-  const onMouseMove = useCallback((e) => {
-    if (!dragStateRef.current) return;
-    const { taskId, edge, startX, originalStart, originalEnd, columnWidthAtStart } = dragStateRef.current;
-    const dx = e.clientX - startX;
-    const cw = columnWidthAtStart || columnWidth;
-    const dDays = dx / cw;
+  const isSpaceDown = useRef(false);
+  const panState = useRef({ panning: false, startX: 0, scrollStart: 0 });
 
-    if (dragAnimRef.current) cancelAnimationFrame(dragAnimRef.current);
-    dragAnimRef.current = requestAnimationFrame(() => {
+  const onBodyMouseDown = useCallback((e) => {
+    if (!isSpaceDown.current) return;
+    const scroller = schedulerContentRef.current;
+    if (!scroller) return;
+    panState.current = { panning: true, startX: e.clientX, scrollStart: scroller.scrollLeft };
+    scroller.style.cursor = "grabbing";
+  }, []);
+
+  const onMouseMove = useCallback((e) => {
+    // panning
+    if (isSpaceDown.current && panState.current.panning) {
+      const dx = e.clientX - panState.current.startX;
+      const el = schedulerContentRef.current;
+      if (el) el.scrollLeft = panState.current.scrollStart - dx;
+      return;
+    }
+
+    if (dragStateRef.current) {
+      const { taskId, edge, startX, originalStart, originalEnd, columnWidthAtStart } = dragStateRef.current;
+      const dx = e.clientX - startX;
+      const cw = columnWidthAtStart || columnWidth;
+      const dDays = dx / cw;
+
+      if (dragAnimRef.current) cancelAnimationFrame(dragAnimRef.current);
+      dragAnimRef.current = requestAnimationFrame(() => {
+        setTasks(prev =>
+          prev.map(task => {
+            if (task.id !== taskId) return task;
+            const whole = Math.trunc(dDays);
+            const frac = dDays - whole;
+            let ns = addDays(new Date(originalStart), whole);
+            let ne = addDays(new Date(originalEnd), whole);
+            if (edge === "left") {
+              ns = addDays(new Date(originalStart), whole);
+              if (ns > ne) ns = new Date(ne);
+            } else if (edge === "right") {
+              ne = addDays(new Date(originalEnd), whole);
+              if (ne < ns) ne = new Date(ns);
+            }
+            return { ...task, startDate: ns, endDate: ne, __frac: frac };
+          })
+        );
+      });
+      return;
+    }
+
+    if (depDrag) {
+      setDepDrag(drag => ({ ...drag, currentX: e.clientX, currentY: e.clientY }));
+    }
+  }, [columnWidth, depDrag]);
+
+  const onMouseUp = useCallback(() => {
+    // panning end
+    if (panState.current.panning) {
+      const sc = schedulerContentRef.current;
+      if (sc) sc.style.cursor = "";
+      panState.current.panning = false;
+    }
+
+    if (dragStateRef.current) {
+      const { taskId, edge, startX, originalStart, originalEnd, columnWidthAtStart } = dragStateRef.current;
+      const lastClientX = window.event?.clientX ?? startX;
+      const dx = lastClientX - startX;
+      const cw = columnWidthAtStart || columnWidth;
+      const dDaysExact = dx / cw;
+      const round = (v) => (v >= 0 ? Math.round(v) : -Math.round(-v));
+      const delta = round(dDaysExact);
+      if (dragAnimRef.current) cancelAnimationFrame(dragAnimRef.current);
       setTasks(prev =>
         prev.map(task => {
           if (task.id !== taskId) return task;
-          const whole = Math.trunc(dDays);
-          const frac = dDays - whole;
-          let ns = addDays(new Date(originalStart), whole);
-          let ne = addDays(new Date(originalEnd), whole);
+          let ns = new Date(originalStart);
+          let ne = new Date(originalEnd);
           if (edge === "left") {
-            ns = addDays(new Date(originalStart), whole);
+            ns = addDays(originalStart, delta);
             if (ns > ne) ns = new Date(ne);
           } else if (edge === "right") {
-            ne = addDays(new Date(originalEnd), whole);
+            ne = addDays(originalEnd, delta);
             if (ne < ns) ne = new Date(ns);
+          } else {
+            ns = addDays(originalStart, delta);
+            ne = addDays(originalEnd, delta);
           }
-          return { ...task, startDate: ns, endDate: ne, __frac: frac };
+          const clean = { ...task, startDate: ns, endDate: ne };
+          delete clean.__frac;
+          return clean;
         })
       );
-    });
-  }, [columnWidth]);
+      dragStateRef.current = null;
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+      return;
+    }
 
-  const onMouseUp = useCallback(() => {
-    if (!dragStateRef.current) return;
-    const { taskId, edge, startX, originalStart, originalEnd, columnWidthAtStart } = dragStateRef.current;
-    const lastClientX = window.event?.clientX ?? startX;
-    const dx = lastClientX - startX;
-    const cw = columnWidthAtStart || columnWidth;
-    const dDaysExact = dx / cw;
-    const round = (v) => (v >= 0 ? Math.round(v) : -Math.round(-v));
-    const delta = round(dDaysExact);
-    if (dragAnimRef.current) cancelAnimationFrame(dragAnimRef.current);
-    setTasks(prev =>
-      prev.map(task => {
-        if (task.id !== taskId) return task;
-        let ns = new Date(originalStart);
-        let ne = new Date(originalEnd);
-        if (edge === "left") {
-          ns = addDays(originalStart, delta);
-          if (ns > ne) ns = new Date(ne);
-        } else if (edge === "right") {
-          ne = addDays(originalEnd, delta);
-          if (ne < ns) ne = new Date(ns);
-        } else {
-          ns = addDays(originalStart, delta);
-          ne = addDays(originalEnd, delta);
-        }
-        const clean = { ...task, startDate: ns, endDate: ne };
-        delete clean.__frac;
-        return clean;
-      })
-    );
-    dragStateRef.current = null;
-    document.body.style.userSelect = "";
-  }, [columnWidth]);
+    if (depDrag) {
+      const e = window.event;
+      const element = document.elementFromPoint(e.clientX, e.clientY);
+      const targetTaskElem = element?.closest(`.${styles.task}`);
+      const targetTaskId = targetTaskElem?.getAttribute('data-task-id');
+
+      if (targetTaskId && targetTaskId !== `${depDrag.fromTaskId}`) {
+        setDependencies(prev => [
+          ...prev,
+          { id: `d${Date.now()}`, from: depDrag.fromTaskId, to: Number(targetTaskId), type: creatingDepType },
+        ]);
+      }
+      setDepDrag(null);
+      document.body.style.userSelect = "";
+    }
+  }, [depDrag, creatingDepType, columnWidth]);
 
   useEffect(() => {
     window.addEventListener("mousemove", onMouseMove);
@@ -404,108 +429,58 @@ const TimelineScheduler = () => {
     };
   }, [onMouseMove, onMouseUp]);
 
-  /* Zoom */
+  /* Keyboard: ESC, T to cycle dep type, Delete to remove task, Space pan */
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setFocusedDepId(null);
+        setHoverDepId(null);
+        setDepDrag(null);
+      }
+      if (e.key.toLowerCase() === "t" && depDrag) {
+        const order = ["FS", "SS", "FF", "SF"];
+        const idx = order.indexOf(creatingDepType);
+        setCreatingDepType(order[(idx + 1) % order.length]);
+      }
+      if (e.key === "Delete" && selectedTaskId != null) {
+        setTasks(prev => prev.filter(t => t.id !== selectedTaskId));
+        setDependencies(prev => prev.filter(d => d.from !== selectedTaskId && d.to !== selectedTaskId));
+        setSelectedTaskId(null);
+      }
+      if (e.code === "Space") {
+        isSpaceDown.current = true;
+      }
+    };
+    const onKeyUp = (e) => {
+      if (e.code === "Space") isSpaceDown.current = false;
+    };
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+    };
+  }, [depDrag, creatingDepType, selectedTaskId]);
+
+  /* Zoom controls */
   const clampZoom = useCallback((w) => Math.max(MIN_COLUMN_WIDTH, Math.min(MAX_COLUMN_WIDTH, w)), []);
   const zoomIn = useCallback(() => setColumnWidth(w => clampZoom(w + 10)), [clampZoom]);
   const zoomOut = useCallback(() => setColumnWidth(w => clampZoom(w - 10)), [clampZoom]);
   const resetZoom = useCallback(() => setColumnWidth(DEFAULT_COLUMN_WIDTH), []);
 
-  const zoomAnchorRef = useRef(null);
-  const setZoomAnchorByIndex = useCallback((idx) => {
-    zoomAnchorRef.current = (typeof idx === "number" && idx >= 0 && idx < daysArray.length) ? idx : null;
-  }, [daysArray.length]);
-  const setZoomAnchorByDate = useCallback((date) => {
-    const idx = daysArray.findIndex(d => d.toDateString() === date.toDateString());
-    zoomAnchorRef.current = idx >= 0 ? idx : null;
-  }, [daysArray]);
-
-
-
-
-
-
-
-  const zoomAtX = useCallback((nextWidth, prevWidth, scroller, clientX) => {
-    if (!scroller) return;
-    const rect = scroller.getBoundingClientRect();
-    const xInView = clientX - rect.left + scroller.scrollLeft;
-    const scale = nextWidth / prevWidth;
-    const newScrollLeft = xInView * scale - (clientX - rect.left);
-    scroller.scrollLeft = Math.max(0, newScrollLeft);
-  }, []);
-
-  const setColumnWidthRaf = useRef(null);
-  const applyZoom = useCallback((nextW, anchorClientX) => {
-    const scroller = schedulerContentRef.current;
-    if (!scroller) return;
-    const prevW = columnWidth;
-    const clamped = clampZoom(nextW);
-    if (clamped === prevW) return;
-
-    let clientX = anchorClientX;
-    if (zoomAnchorRef.current != null) {
-      const rect = scroller.getBoundingClientRect();
-      const dayCenterContentX = (zoomAnchorRef.current + 0.5) * prevW;
-      clientX = rect.left + (dayCenterContentX - scroller.scrollLeft);
-    }
-    zoomAtX(clamped, prevW, scroller, clientX ?? (scroller.getBoundingClientRect().left + scroller.clientWidth / 2));
-    if (setColumnWidthRaf.current) cancelAnimationFrame(setColumnWidthRaf.current);
-    setColumnWidthRaf.current = requestAnimationFrame(() => setColumnWidth(clamped));
-  }, [columnWidth, clampZoom, zoomAtX]);
-
-  const onWheelZoom = useCallback((e) => {
-    const isZoomGesture = e.ctrlKey || e.metaKey;
-    if (!isZoomGesture) return;
-    e.preventDefault();
-    const step = 0.025;
-    const factor = Math.exp(-step * Math.sign(e.deltaY));
-    applyZoom(columnWidth * factor, e.clientX);
-  }, [columnWidth, applyZoom]);
-
-  /* Scroll snap */
-  const scrollIdleRef = useRef(null);
-  const onScroll = useCallback(() => {
-    const scroller = schedulerContentRef.current;
-    if (!scroller) return;
-    if (scrollIdleRef.current) clearTimeout(scrollIdleRef.current);
-    scrollIdleRef.current = setTimeout(() => {
-      const col = columnWidth;
-      const current = scroller.scrollLeft;
-      scroller.scrollTo({ left: Math.round(current / col) * col, behavior: "smooth" });
-    }, 140);
-  }, [columnWidth]);
-
-  useEffect(() => {
+  /* Double-click create task */
+  const onGridDoubleClick = useCallback((e) => {
     const sc = schedulerContentRef.current;
     if (!sc) return;
-    sc.addEventListener("scroll", onScroll, { passive: true });
-    return () => sc.removeEventListener("scroll", onScroll);
-  }, [onScroll]);
-
-  /* Dimensions */
-  const timelineWidth = useMemo(() => daysArray.length * columnWidth, [daysArray.length, columnWidth]);
-  const wrapperInnerTrackHeight = Math.max(visibleTrackHeight, timelineRowsHeight);
-  const wrapperHeight = columnHeaderHeight + wrapperInnerTrackHeight;
-
-  /* Today index + initial center */
-  const todayIndex = useMemo(() => {
-    const today = new Date();
-    return daysArray.findIndex(d => d.toDateString() === today.toDateString());
-  }, [daysArray]);
-  const didInitialScrollRef = useRef(false);
-  useEffect(() => {
-    if (!schedulerContentRef.current) return;
-    if (todayIndex === -1) return;
-    if (didInitialScrollRef.current) return;
-    const scroller = schedulerContentRef.current;
-    const columnLeft = todayIndex * columnWidth;
-    const viewportWidth = scroller.clientWidth;
-    const targetScrollLeft = Math.max(0, columnLeft - Math.max(0, (viewportWidth - columnWidth) / 2));
-    requestAnimationFrame(() => {
-      scroller.scrollTo({ left: targetScrollLeft, behavior: "smooth" });
-      didInitialScrollRef.current = true;
-    });
-  }, [todayIndex, columnWidth]);
+    const rect = sc.getBoundingClientRect();
+    const x = (e.clientX - rect.left) + sc.scrollLeft;
+    const dayIdx = Math.floor(x / columnWidth);
+    if (dayIdx < 0 || dayIdx >= daysArray.length) return;
+    const startDate = daysArray[dayIdx];
+    const endDate = daysArray[Math.min(dayIdx + 2, daysArray.length - 1)];
+    const newTask = { id: Date.now(), label: "New Task", startDate, endDate };
+    setTasks(prev => [...prev, newTask]);
+  }, [columnWidth, daysArray]);
 
   /* Styles */
   const getTaskStyle = useCallback((task) => {
@@ -526,7 +501,6 @@ const TimelineScheduler = () => {
       top: task.row * ROW_HEIGHT + TASK_BAR_PADDING,
       height: ROW_HEIGHT - 2 * TASK_BAR_PADDING,
       borderRadius: 8,
-    //   background: "linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06))",
       color: "#fff",
       cursor: "grab",
       display: "flex",
@@ -539,64 +513,51 @@ const TimelineScheduler = () => {
       overflow: "hidden",
       transform: `translateX(${pxOffset}px)`,
       willChange: "transform",
-      padding: "0 10px"
+      padding: "0 10px",
+      background: "linear-gradient(180deg, #4a90e2, #357ABD)"
     };
   }, [columnWidth, getStartIdx, getEndIdx]);
 
   const getTaskFocusStyle = (taskId) => {
-    if (!activeTaskIds) return {};
-    const isActive = activeTaskIds.has(taskId);
-    return isActive
-      ? { filter: "none", opacity: 1 }
-      : { filter: "blur(1px)", opacity: 0.35 };
+    if (!activeDepId) return {};
+    const dep = dependencies.find(d => d.id === activeDepId);
+    if (!dep) return {};
+    const isActive = dep.from === taskId || dep.to === taskId;
+    return isActive ? { opacity: 1 } : { opacity: 0.35, filter: "blur(1px)" };
   };
-
-  /* Dependency paths: FS only */
- const dependencyPaths = useMemo(() => {
-  const taskMap = new Map(packedTasks.map(t => [t.id, t]));
-  const paths = [];
-  const cssMarginTop = 20; // from .task { margin-top: 20px }
-
-  for (const dep of dependencies) {
-    if (dep.type !== "FS") continue;
-    const ATask = taskMap.get(dep.from);
-    const BTask = taskMap.get(dep.to);
-    if (!ATask || !BTask) continue;
-
-    const A = computeTaskAnchors(
-      ATask, getStartIdx, getEndIdx, columnWidth,
-      columnHeaderHeight, ATask.__frac || 0, cssMarginTop
-    );
-    const B = computeTaskAnchors(
-      BTask, getStartIdx, getEndIdx, columnWidth,
-      columnHeaderHeight, BTask.__frac || 0, cssMarginTop
-    );
-    if (!A || !B) continue;
-
-    const d = buildFsPathMidAnchors(
-      { xRight: A.xRight, yMid: A.yMid },
-      { xLeft:  B.xLeft,  yMid: B.yMid },
-    //   DEP_MARGIN
-    40
-    );
-
-    paths.push({ id: dep.id, d });
-  }
-  return paths;
-}, [dependencies, packedTasks, getStartIdx, getEndIdx, columnWidth, columnHeaderHeight]);
-
-
 
   const getPathFocusStyle = (depId) => {
     if (!activeDepId) return {};
-    const isActive = depId === activeDepId;
-    return isActive
-      ? { opacity: 1, stroke: "var(--dep-line-color, rgba(255,255,255,0.9))" }
-      : { opacity: 0.1, stroke: "var(--dep-line-color, rgba(255,255,255,0.25))" };
+    return depId === activeDepId ? { opacity: 1, stroke: "rgba(255,255,255,0.95)" } : { opacity: 0.15, stroke: "rgba(255,255,255,0.35)" };
   };
 
-  const timelineRef = useRef(null);
+  const getLiveDepPath = () => {
+    if (!depDrag) return null;
+    const sourceTask = packedTasks.find(t => t.id === depDrag.fromTaskId);
+    if (!sourceTask) return null;
 
+    const A = computeTaskAnchors(sourceTask, getStartIdx, getEndIdx, columnWidth, columnHeaderHeight, sourceTask.__frac || 0, 20);
+    if (!A) return null;
+
+    const sc = schedulerContentRef.current;
+    const svgRect = timelineRef.current?.querySelector('svg')?.getBoundingClientRect();
+    if (!svgRect || !sc) return null;
+
+    const start = (creatingDepType === "FS" || creatingDepType === "FF")
+      ? { x: A.xRight, y: A.yMid }
+      : { x: A.xLeft, y: A.yMid };
+
+    const cursorX = depDrag.currentX - svgRect.left + sc.scrollLeft;
+    const cursorY = depDrag.currentY - svgRect.top + sc.scrollTop;
+
+    const dayIdx = Math.max(0, Math.min(daysArray.length - 1, Math.floor(cursorX / columnWidth)));
+    const snapX = dayIdx * columnWidth + ((creatingDepType === "FS" || creatingDepType === "SS") ? TASK_SIDE_INSET : columnWidth - TASK_SIDE_INSET);
+    const end = { x: snapX, y: cursorY };
+
+    return roundManhattanPath([start, { x: end.x, y: start.y }, end], 5);
+  };
+
+  /* Render */
   return (
     <div
       ref={timelineRef}
@@ -604,20 +565,16 @@ const TimelineScheduler = () => {
       style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", position: "relative" }}
       onClick={() => { setFocusedDepId(null); setHoverDepId(null); }}
     >
-      <FloatingBubble parentRef={timelineRef} size={50} onAction={(action) => {
-        const scroller = schedulerContentRef.current;
-        if (!scroller) return;
-        if (action === "today") {
-          const today = new Date();
-          const idx = daysArray.findIndex(d => d.toDateString() === today.toDateString());
-          if (idx === -1) return;
-          const colLeft = idx * columnWidth;
-          const view = scroller.clientWidth;
-          scroller.scrollTo({ left: Math.max(0, colLeft - Math.max(0, (view - columnWidth) / 2)), behavior: "smooth" });
-        } else if (action === "zoomIn") setColumnWidth(w => Math.min(MAX_COLUMN_WIDTH, w + 10));
-        else if (action === "zoomOut") setColumnWidth(w => Math.max(MIN_COLUMN_WIDTH, w - 10));
-        else if (action === "reset") setColumnWidth(DEFAULT_COLUMN_WIDTH);
-      }} />
+      {/* Top Toolbar */}
+      {/* <div style={{ display: "flex", gap: 8, padding: 8, alignItems: "center" }}>
+        <button onClick={zoomIn}>Zoom +</button>
+        <button onClick={zoomOut}>Zoom -</button>
+        <button onClick={resetZoom}>Reset</button>
+        <label style={{ marginLeft: 12 }}>
+          <input type="checkbox" checked={showOutsideLabels} onChange={e => setShowOutsideLabels(e.target.checked)} /> Labels outside
+        </label>
+        <span style={{ marginLeft: 12, color: "#aaa" }}>Hold Space to pan</span>
+      </div> */}
 
       <div
         ref={schedulerContentRef}
@@ -627,31 +584,10 @@ const TimelineScheduler = () => {
           overflowX: "auto",
           overflowY: "auto",
           flex: "1 1 auto",
-          minHeight: "calc(100% - 50px)",
-          maxHeight: 420,
-          scrollBehavior: "smooth",
-          WebkitOverflowScrolling: "touch",
-          overscrollBehavior: "contain"
+          scrollBehavior: "smooth"
         }}
-        onWheel={(e) => {
-          const isZoomGesture = e.ctrlKey || e.metaKey;
-          if (!isZoomGesture) return;
-          e.preventDefault();
-          const step = 0.025;
-          const factor = Math.exp(-step * Math.sign(e.deltaY));
-          const next = columnWidth * factor;
-          const rect = e.currentTarget.getBoundingClientRect();
-          const clientX = e.clientX ?? (rect.left + rect.width / 2);
-          const prevW = columnWidth;
-          const clamped = Math.max(MIN_COLUMN_WIDTH, Math.min(MAX_COLUMN_WIDTH, next));
-          if (clamped !== prevW) {
-            const xInView = clientX - rect.left + e.currentTarget.scrollLeft;
-            const scale = clamped / prevW;
-            const newScrollLeft = xInView * scale - (clientX - rect.left);
-            e.currentTarget.scrollLeft = Math.max(0, newScrollLeft);
-            setColumnWidth(clamped);
-          }
-        }}
+        onMouseDown={onBodyMouseDown}
+        onDoubleClick={onGridDoubleClick}
       >
         {/* Sticky month header row */}
         <div className={styles["zone-header-row"]} style={{ display: "flex", position: "sticky", top: 0, zIndex: 5 }}>
@@ -670,7 +606,7 @@ const TimelineScheduler = () => {
                   borderBottom: "var(--border-ultra-light)"
                 }}
               >
-                <div style={{ width: "100%", padding: "0 20px", textAlign: "start", color: "white" }}>
+                <div ref={(idx === 0) ? firstColumnHeaderRef : undefined} style={{ width: "100%", padding: "0 20px", textAlign: "start", color: "white" }}>
                   {zone.zoneLabel}
                 </div>
               </div>
@@ -699,14 +635,9 @@ const TimelineScheduler = () => {
             {dayZones.flatMap((zone, z) => {
               return zone.days.map((day, idx) => {
                 const isWeekend = day.date.getDay() === 0 || day.date.getDay() === 6;
-                const globalIdx = dayZones.slice(0, z).reduce((acc, g) => acc + g.days.length, 0) + idx;
                 return (
                   <div key={`${z}-${idx}`} className={styles["zone-column"]} style={{ minWidth: columnWidth }} title={day.date.toDateString()}>
-                    <div
-                      ref={globalIdx === 0 ? firstColumnHeaderRef : undefined}
-                      className={styles["zone-column-header"]}
-                      style={{ cursor: "zoom-in" }}
-                    >
+                    <div className={styles["zone-column-header"]} style={{ cursor: "zoom-in" }}>
                       <p>{day.shortLabel}</p>
                     </div>
                     <div className={`${styles["zone-column-content"]} ${isWeekend ? styles["weekend"] : ""}`} style={{ height: visibleTrackHeight }} />
@@ -725,17 +656,17 @@ const TimelineScheduler = () => {
           >
             <defs>
               <marker id="arrowhead" markerWidth="8" markerHeight="9" refX="7.2" refY="4" orient="auto">
-                <polygon points="0 0, 6 3 , 0 6" fill="var(--dep-arrow-color, rgba(255, 255, 255))" />
+                <polygon points="0 0, 6 3 , 0 6" fill="rgba(255, 255, 255, 0.95)" />
               </marker>
             </defs>
+
             {dependencyPaths.map(p => (
               <path
                 key={p.id}
                 d={p.d}
                 fill="none"
-                stroke="var(--dep-line-color, rgba(255, 255, 255, 0.3))"
-                strokeWidth={activeDepId === p.id ? 2.25 : 1.75}
-                shapeRendering="crispEdges"
+                stroke="rgba(255,255,255,0.6)"
+                strokeWidth={1.8}
                 markerEnd="url(#arrowhead)"
                 style={{ cursor: "pointer", transition: "opacity 120ms ease, filter 120ms ease, stroke 120ms ease", ...getPathFocusStyle(p.id) }}
                 onMouseEnter={(e) => { e.stopPropagation(); setHoverDepId(p.id); }}
@@ -744,57 +675,83 @@ const TimelineScheduler = () => {
               />
             ))}
 
-            
+            {/* Live dragging dependency path */}
+            {depDrag && (
+              <path
+                d={getLiveDepPath()}
+                fill="none"
+                stroke="rgba(255,255,255,0.85)"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                markerEnd="url(#arrowhead)"
+                pointerEvents="none"
+              />
+            )}
           </svg>
-
-          {/* Today overlay (div version) */}
-{todayIndex !== -1 && (
-  <div
-    className={styles["today-zone"]}
-    style={{
-      position: "absolute",
-      top: 0,
-      left: (todayIndex + 0.5) * columnWidth - 0.5, // center of day
-      transform: "translateX(-50%)",
-      width: 1,
-      height: columnHeaderHeight + Math.max(visibleTrackHeight, timelineRowsHeight),
-      pointerEvents: "none",
-    }}
-  >
-    <span style={{ display: "block" }} />
-    <div />
-  </div>
-)}
-
 
           {/* Task layer */}
           <div
             className={styles["task-layer"]}
             style={{ position: "absolute", left: 0, top: columnHeaderHeight, width: timelineWidth, height: timelineRowsHeight, pointerEvents: "none", zIndex: 10 }}
           >
-            {packedTasks.map(task => (
-              <div
-                key={task.id}
-                className={styles["task"]}
-                style={{ ...getTaskStyle(task), pointerEvents: "auto", transition: "opacity 120ms ease, filter 120ms ease", ...getTaskFocusStyle(task.id) }}
-                onMouseDown={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const offsetX = e.clientX - rect.left;
-                  if (offsetX < 12) onTaskMouseDown(e, task.id, "left");
-                  else if (offsetX > rect.width - 12) onTaskMouseDown(e, task.id, "right");
-                  else onTaskMouseDown(e, task.id, null);
-                }}
-                title={task.label}
-              >
-                <p style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, padding: "0 10px" }}>{task.label}</p>
-                <p style={{ marginLeft: 8, fontSize: 11, opacity: 0.85, paddingRight: 10 }}>
-                  {task.endDate.toLocaleDateString()}
-                </p>
-              </div>
-            ))}
+            {packedTasks.map(task => {
+              const s = getStartIdx(task), e = getEndIdx(task);
+              const left = s * columnWidth + TASK_SIDE_INSET;
+              const top = task.row * ROW_HEIGHT + TASK_BAR_PADDING;
+
+              return (
+                <React.Fragment key={task.id}>
+                  {showOutsideLabels && (
+                    <div style={{ position: "absolute", left, top: top - 4, color: "#fff", fontSize: 12, pointerEvents: "none" }}>
+                      {task.label}
+                    </div>
+                  )}
+                  <div
+                    className={styles["task"]}
+                    style={{ ...getTaskStyle(task), pointerEvents: "auto", transition: "opacity 120ms ease, filter 120ms ease", ...getTaskFocusStyle(task.id), outline: selectedTaskId === task.id ? "2px solid #fff" : "none" }}
+                    onMouseDown={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const offsetX = e.clientX - rect.left;
+                      if (offsetX < 12) onTaskMouseDown(e, task.id, "left");
+                      else if (offsetX > rect.width - 12) onTaskMouseDown(e, task.id, "right");
+                      else onTaskMouseDown(e, task.id, null);
+                    }}
+                    onClick={(e) => { e.stopPropagation(); setSelectedTaskId(task.id); }}
+                    data-task-id={task.id}
+                    title={task.label}
+                  >
+                    <p style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, padding: "0 10px" }}>{task.label}</p>
+                    <p style={{ marginLeft: 8, fontSize: 11, opacity: 0.85, paddingRight: 10 }}>{task.endDate.toLocaleDateString()}</p>
+
+                    {/* Dependency handles */}
+                    <div
+                      onMouseDown={(e) => { e.stopPropagation(); setDepDrag({ fromTaskId: task.id, currentX: e.clientX, currentY: e.clientY }); document.body.style.userSelect = "none"; setCreatingDepType("FS"); }}
+                      style={{ position: "absolute", right: 0, top: 0, width: 12, height: "100%", cursor: "crosshair", zIndex: 20, backgroundColor: "rgba(255,255,255,0.1)", borderRadius: "0 8px 8px 0" }}
+                      title="Drag to create dependency (FS default). Press T to cycle FS/SS/FF/SF"
+                    />
+                    <div
+                      onMouseDown={(e) => { e.stopPropagation(); setDepDrag({ fromTaskId: task.id, currentX: e.clientX, currentY: e.clientY }); document.body.style.userSelect = "none"; setCreatingDepType("SS"); }}
+                      style={{ position: "absolute", left: 0, top: 0, width: 12, height: "100%", cursor: "crosshair", zIndex: 20, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "8px 0 0 8px" }}
+                      title="Drag to create dependency (SS default). Press T to cycle"
+                    />
+                  </div>
+                </React.Fragment>
+              );
+            })}
           </div>
         </div>
       </div>
+
+      {/* HUD for dep type */}
+      {depDrag && (
+        <div style={{
+          position: "fixed", left: depDrag.currentX + 12, top: depDrag.currentY + 12,
+          background: "rgba(0,0,0,0.75)", color: "#fff", fontSize: 12,
+          padding: "4px 6px", borderRadius: 4, pointerEvents: "none"
+        }}>
+          {creatingDepType} (press T)
+        </div>
+      )}
     </div>
   );
 };

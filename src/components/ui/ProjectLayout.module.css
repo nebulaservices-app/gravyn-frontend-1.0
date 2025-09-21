@@ -19,13 +19,12 @@
 .page-content-children-wrapper{
     height: 100%;
     width: 100%;
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(255, 255, 255, 0.02);
     /*background: rgba(255, 255, 255, 0.035);*/
     /*background: rgba(255, 255, 255, 0.015);*/
     overflow-y: hidden;
     border-radius: 5px;
     border : var(--border-ultra-light);
-    box-shadow: 0 0 0px rgba(0 , 0 , 0 , 0);
 }
 
 /*NAV BAR */
@@ -137,10 +136,10 @@
 .workspace-pill-name{
     color: rgba(255, 255, 255, 0.85);
     font-family: Inter, 'sans-serif';
-    font-weight: 600;
+    font-weight: 500;
     /*font-size: 14px;*/
-    font-size: 12.5px;
-    letter-spacing: -0.10px;
+    font-size: 13px;
+    letter-spacing: -0.0px;
     display: flex;
     align-items: center;
     gap: 7px;

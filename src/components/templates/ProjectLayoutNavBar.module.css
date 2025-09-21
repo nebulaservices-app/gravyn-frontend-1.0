@@ -34,16 +34,16 @@
 }
 
 .nav-pill-i img{
-    height: 12.5px;
-    width: 12.5px;
+    height: 12.75px;
+    width: 12.75px;
 }
 
 
 .nav-pill-i p{
-    font-size: 12px;
+    font-size: 12.5px;
     font-family: Inter, 'sans-serif' !important;
     margin: 0;
-    font-weight: 550;
+    font-weight: 520;
     letter-spacing: 0px !important;
 }
 

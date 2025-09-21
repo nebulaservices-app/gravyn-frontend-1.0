@@ -241,7 +241,7 @@ const SideBar_Proj = ({onMenuSelect}) => {
           <div className={styles["sidebar-flex-i"]}>
             <div className={styles["sidebar-logo-wrapper"]}>
               <img src={logo} alt="Gravyn Logo" />
-              {!collapsed && <p>Gravyn</p>}
+              {!collapsed && <p>Project Managment</p>}
             </div>
           </div>
         </div>

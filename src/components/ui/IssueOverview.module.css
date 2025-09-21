@@ -207,17 +207,18 @@
 }
 
 .context-text-wrapper .header-heading{
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0 !important;
     color: white !important;
 }
 
 .context-text-wrapper .header-subheading{
     font-size: 12.5px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.75);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
     font-family: Inter !important;
-    margin-top: 12px !important;
+    margin-top: 10px !important;
 }
 
 .header-context-footer{
@@ -420,13 +421,14 @@
 
 .section-config-wrapper .sec-config-i img{
     opacity: 0.5;
+    height: 13px;
 }
 
 .section-config-wrapper .sec-config-i input{
     background: transparent;
     font-family: Inter, 'sans-serif';
     outline: none;
-    font-size: 14px;
+    font-size: 13px;
     border : none;
     font-weight: 500;
     color: white;

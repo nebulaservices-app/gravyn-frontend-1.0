@@ -1,19 +1,19 @@
 
 body{
 
-    /*--back-side-bg : #090909;*/
+    /* --back-side-bg : #090909; */
 
     /* 050520, 08080c */
 /*    rgb(12,14,19)
 */
---back-side-bg : linear-gradient(to bottom right , #020207, #020207);
+--back-side-bg : linear-gradient(to bottom right , black, black );
 
 
-    /*--back-side-bg : linear-gradient(to bottom right , rgb(12,14,19), rgb(12,14,19));*/
+    /* --back-side-bg : linear-gradient(to bottom right , rgb(12,14,19), rgb(12,14,19)); */
 
 
-    /*--back-side-bg : rgb(9, 9,11);*/
-    /* --back-side-bg : #03060D;*/
+    /* --back-side-bg : rgb(9, 9,18); */
+    /* --back-side-bg : #03060D; */
 
 
 }

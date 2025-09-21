@@ -1,0 +1,17 @@
+const demoSubscription = {
+  userId: "user_abc123",
+  tier: "premium", // Could be 'free', 'basic', 'premium', 'enterprise'
+  activatedAt: "2025-08-01T00:00:00Z",
+  expiresAt: "2025-09-01T00:00:00Z",
+  features: {
+    maxProjects: 50,
+    maxTeamMembers: 25,
+    unlimitedGoals: true,
+    advancedAnalytics: true,
+    prioritySupport: true,
+    customWorkflows: true,
+    integrations: ["Slack", "GitHub", "Google Workspace"],
+    apiAccess: true,
+    advancedPermissions: true,
+  },
+};

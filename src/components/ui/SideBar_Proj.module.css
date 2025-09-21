@@ -1,11 +1,12 @@
 /* Sidebar wrapper */
 .sidebar-wrapper {
-  width: var(--sidebar-width, 14%);
+  width: var(--sidebar-width, 16%);
   height: 100vh;
   display: flex;
   overflow: hidden;
   flex-direction: column;
   transition: width 0.3s ease;
+    border-right: var(--sidebar-width);
 }
 
 /* Collapsed sidebar */
@@ -18,7 +19,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
+  padding: 20px 20px;
   flex-shrink: 0;
   box-sizing: border-box;
   width: 100%;
@@ -32,7 +33,7 @@
 }
 
 .sidebar-logo-wrapper img {
-  height: 14px;
+  height: 15px;
   user-select: none;
   pointer-events: none;
 }
@@ -88,17 +89,26 @@
 /* Menu blocks wrapper */
 .menu-blocks-wrapper {
   width: 100%;
+  display: flex;
+  align-items: start;
+  gap: 20px;
+  flex-direction: column;
+}
+
+.menu-jr-block-wrapper{
+    width: 100%;
 }
 
 /* Section titles */
 .menu-type-title {
-  font-size: 10.5px;
+  font-size: 12.5px;
   color: grey;
-  font-family: Inter, 'sans-serif';
+  font-family: Poppins, 'sans-serif';
   font-weight: 500;
-  text-transform: uppercase;
-  margin: 15px 0 10px 12px;
-  letter-spacing: 0.5px;
+  text-transform: capitalize;
+  margin: 0px 0 7px 12px;
+  letter-spacing: -0.5px;
+  font-family: Poppins;
   user-select: none;
 }
 
@@ -111,7 +121,7 @@
 .menu-item-i {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 10px;
   padding: 7px 12px;
   border-radius: 5px;
   margin-bottom: 2.5px;
@@ -136,14 +146,15 @@
 
 /* Menu icons styling */
 .menu-item-i img {
-  height: 12px;
+  height: 12.75px;
   opacity: 0.6;
   transition: opacity 0.3s;
   user-select: none;
 }
 
 .menu-item-i p{
-    font-size: 12px;
+    font-size: 12.75px;
+    font-weight: 500 !important;
 }
 
 /* Active menu item */
@@ -215,6 +226,9 @@
 
 .submenu-item p {
     padding: 5px 0;
+    font-family: Inter;
+    letter-spacing: 0 !important;
+    font-size: 12.5px;
 }
 
 

@@ -1,33 +1,159 @@
-/* Orbies.module.css */
-
-/* Styles for the container */
+/* Container */
 .star-container {
-    overflow: hidden;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    position: absolute;
-    background: transparent; /* or any background color */
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: transparent;
+  z-index: 0;
+
+  --parallax-x: 0px;
+  --parallax-y: 0px;
 }
 
-/* Styles for individual stars */
+/* Per-star parallax translation */
+.star-wrapper {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(
+    calc(var(--parallax-x, 0px) * var(--depth, 0.6)),
+    calc(var(--parallax-y, 0px) * var(--depth, 0.6))
+  );
+  will-change: transform;
+}
+
+/* Star visuals + animations */
 .star {
-    position: absolute;
-    background: white;
-    border-radius: 50%;
-    /* Add the animation for movement */
-    animation: moveRandomly 14s infinite linear;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,1),
+    rgba(255,255,255,0.85) 30%,
+    rgba(255,255,255,0.4) 60%
+  );
+  box-shadow: 0 0 6px rgba(255,255,255,0.08);
+  transform-origin: center center;
+  will-change: transform, opacity;
+
+  animation:
+    twinkle var(--twinkle-duration, 6s) ease-in-out infinite,
+    drift var(--drift-duration, 28s) ease-in-out infinite;
+}
+
+/* Softer twinkle */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.35; filter: drop-shadow(0 0 6px rgba(147,197,253,0.28)); }
+  50%      { opacity: 1;    filter: drop-shadow(0 0 9px rgba(147,197,253,0.42)); }
+}
+
+/* Slow meander */
+@keyframes drift {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(var(--drift-x, 0px), var(--drift-y, 0px)) rotate(var(--drift-rot, 0deg)); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
 
 
 
-/* Keyframes for random movement */
-@keyframes moveRandomly {
-    0% {
-        transform: translate(0, 0);
-    }
-    100% {
-        transform: translate(calc(100vw - 50px), calc(100vh - 50px));
-    }
+
+
+
+
+
+/* Shooting stars — head on the right, move forward (positive local X) */
+.shooting-star {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: right center;
+  width: var(--len, 260px);
+  height: var(--thickness, 1px);
+  background: linear-gradient(
+    to left,
+    rgba(255,255,255,1) 0%,
+    rgba(255,255,255,0.85) 12%,
+    rgba(255,255,255,0.25) 55%,
+    rgba(255,255,255,0) 100%
+  );
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.22));
+  will-change: transform, opacity, filter;
+
+  /* start rotated and just before entry */
+  transform: rotate(var(--angle, -35deg)) translateX(var(--preoffset, -20px));
+  animation: shoot var(--duration, 1000ms) linear forwards;
+}
+
+@keyframes shoot {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--angle, -35deg)) translateX(var(--preoffset, -20px));
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--angle, -35deg)) translateX(calc(var(--len, 260px) + 24px));
+    filter: blur(1px);
+  }
+}
+
+
+
+
+
+
+
+
+
+/* Orbit wrapper centered in container */
+.orbit {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+
+  /* rotate around center using custom properties:
+     period = time for full revolution
+     direction = +1 or -1 multiplier
+     phase = starting angle offset
+  */
+  transform-origin: center center;
+  animation: orbit calc(var(--period, 20s)) linear infinite;
+}
+
+/* Use phase and direction by composing transforms */
+@keyframes orbit {
+  from {
+    transform: rotate(calc(var(--phase, 0deg)));
+  }
+  to {
+    /* add 360deg times direction to rotate CW or CCW */
+    transform: rotate(calc(var(--phase, 0deg) + (360deg * var(--direction, 1))));
+  }
+}
+
+/* Place the star at radius distance from center, with slight breathing */
+.orbit > .star-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* radial breathing around radius (eccentricity) */
+  --r: calc(var(--radius, 200px) * (1 + var(--ecc, 0)));
+  transform: translate(
+      calc(var(--parallax-x, 0px) * var(--depth, 0.2)),
+      calc(var(--parallax-y, 0px) * var(--depth, 0.2))
+    )
+    translateX(var(--r));
+  will-change: transform;
+}
+
+/* Optional: subtle in/out pulse to vary ellipse a bit */
+.orbit > .star-wrapper .star {
+  animation:
+    twinkle var(--twinkle-duration, 6s) ease-in-out infinite,
+    breathe 8s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(147,197,253,0.28)); }
+  50%      { filter: drop-shadow(0 0 9px rgba(147,197,253,0.42)); }
 }

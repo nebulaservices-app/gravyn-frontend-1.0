@@ -119,10 +119,6 @@
 }
 
 
-.task-header{
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.07);
-}
 
 .task-card:nth-child(odd) {
     background: rgba(255, 255, 255, 0.035); /* alternate shade */
@@ -232,20 +228,8 @@
     margin: 0;
 }
 
-.task-header{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
 
 
-
-.task-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
 
 .task-priority-pill {
     font-size: 11px;

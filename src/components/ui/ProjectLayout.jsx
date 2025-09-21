@@ -29,6 +29,7 @@ import {getUserById} from "../../service/User/UserFetcher";
 import aiTriageService from "../../service/AiTriage/aiTriageService.js";
 import {SnackbarProvider, useSnackbar} from "../../context/SnackbarProvider";
 import ProjectLayoutNavBar from "../templates/ProjectLayoutNavBar.jsx"
+import ProjectCreationModalFlow from '../flows/projectCreationModalFlow.jsx'
 
 const TierModal = ({user , championTierVisibility , setChampionTierVisibility}) =>{
 
@@ -1096,11 +1097,14 @@ const ProjectLayout = ({
     }, [project?._id, project?.aiTriage?.enabled]);
     
 
+    const [open , setOpen] = useState(true)
+
 
 
     return (
         <SnackbarProvider>
             <div className={styles['page-wrapper']}>
+                            <ProjectCreationModalFlow/>
                 <SideBar_Proj onMenuSelect={handleMenuSelection}/>
                 <div className={styles['page-content-parent-wrapper']}>
                     <div className={styles['page-content-children-wrapper']}>
