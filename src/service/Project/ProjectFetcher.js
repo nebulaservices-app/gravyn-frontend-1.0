@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const BASE_URL = "http://localhost:5001"; // or your actual base URL
-
 /**
  * Fetch a single project by ID.
  * @param {string} projectId - The ID of the project to fetch.
