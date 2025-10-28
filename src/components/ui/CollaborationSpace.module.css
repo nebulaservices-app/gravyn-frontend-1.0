@@ -160,6 +160,7 @@
     display: flex;
     align-items: center;
     gap: 25px;
+    background-color: rebeccapurple;
 }
 
 .header-context-capsule:first-child{

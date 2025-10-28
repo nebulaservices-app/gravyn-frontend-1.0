@@ -22,7 +22,7 @@ export const Kairo = ({ user, handleClose }) => {
     ]);
     const [input, setInput] = useState("");
     const bottomRef = useRef(null);
-    const picture = user.picture;
+    const picture = user?.picture;
     const userId = localStorage.getItem("nuid");
 
     useEffect(() => {
@@ -80,7 +80,7 @@ export const Kairo = ({ user, handleClose }) => {
                         <img src={kairo} alt="Kairo" />
                         <div className={styles["chatterbox-text-wrapper"]}>
                             <p>Kairo.ai</p>
-                            <p>Nebula Intelligent Agent</p>
+                            <p>Gravyn Intelligent Agent</p>
                         </div>
                     </div>
                     <img onClick={handleClose} className={styles["closer-button"]} src={close} />

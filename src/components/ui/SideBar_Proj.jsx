@@ -18,6 +18,13 @@ import help from "../../images/icons/help.svg";
 import logout from "../../images/icons/logout.svg";
 import topdown from "../../images/icons/topdown.svg";
 
+// Financial icons (add your real icons later)
+import invoices from "../../images/icons/inbox.svg";
+import finances from "../../images/icons/inbox.svg";
+import contracts from "../../images/icons/inbox.svg";
+
+const isFinancialEnabled = true; // For demo. Later: bind this to subscription logic
+
 const menuStructure = [
   {
     title: null,
@@ -48,18 +55,9 @@ const menuStructure = [
         icon: calendar,
         path: "/app/project/68159219cdb8524689046498/calendar-schedule",
         subItems: [
-          {
-            label: "Calendar",
-            path: "/app/project/68159219cdb8524689046498/calendar-schedule",
-          },
-          {
-            label: "Timeline",
-            path: "/app/project/68159219cdb8524689046498/timeline",
-          },
-          {
-            label: "Workload Analysis",
-            path: "/app/project/68159219cdb8524689046498/calendar-schedule/workload",
-          },
+          { label: "Calendar", path: "/app/project/68159219cdb8524689046498/calendar-schedule" },
+          { label: "Timeline", path: "/app/project/68159219cdb8524689046498/timeline" },
+          { label: "Workload Analysis", path: "/app/project/68159219cdb8524689046498/calendar-schedule/workload" },
         ],
       },
       { label: "Files & Documents", icon: files, path: "/project/files" },
@@ -70,13 +68,37 @@ const menuStructure = [
       },
     ],
   },
+  ...(isFinancialEnabled
+    ? [
+        {
+          title: "Financial",
+          items: [
+            {
+              label: "Invoices",
+              icon: invoices,
+              path: "/app/project/68159219cdb8524689046498/invoices",
+            },
+            {
+              label: "Finances",
+              icon: finances,
+              path: "/app/project/68159219cdb8524689046498/finances",
+              subItems: [
+                { label: "Overview", path: "/app/project/68159219cdb8524689046498/finances" },
+                { label: "Statements", path: "/app/project/68159219cdb8524689046498/finances/statements" },
+              ],
+            },
+            {
+              label: "Contract Management",
+              icon: contracts,
+              path: "/app/project/68159219cdb8524689046498/contracts",
+            },
+          ],
+        },
+      ]
+    : []),
 ];
 
-const bottomMenu = [
-  // { label: "Settings", icon: settings, path: "/settings" },
-  // { label: "Help & Support", icon: help, path: "/help" },
-  // { label: "Log out", icon: logout, path: "/logout" },
-];
+const bottomMenu = [];
 
 const MenuItem = ({ item, activePath, onClick, hasSubmenu, isOpen, onToggle, collapsed }) => {
   const isActive =
@@ -111,7 +133,7 @@ const MenuItem = ({ item, activePath, onClick, hasSubmenu, isOpen, onToggle, col
               onClick={() => onClick(subItem.path)}
               role="button"
               tabIndex={0}
-              onKeyPress={() => onClick(subItem.path , subItem.label)}
+              onKeyPress={() => onClick(subItem.path, subItem.label)}
             >
               <p>{subItem.label}</p>
             </div>
@@ -148,7 +170,7 @@ const MenuSection = ({
     <div className={styles["menu-jr-block-wrapper"]}>
       <div className={styles["menu-item-wrapper"]}>
         {title && (
-          <p
+          <div
             className={styles["menu-type-title"]}
             style={collapsibleCategory && hasSubmenuItems ? { cursor: "pointer" } : {}}
             onClick={toggleCategory}
@@ -164,8 +186,9 @@ const MenuSection = ({
               }
             }}
           >
-            {title} {collapsibleCategory && hasSubmenuItems && (categoryOpen ? "▾" : "▸")}
-          </p>
+            <p>{title}</p> 
+            <span>{collapsibleCategory && hasSubmenuItems && (categoryOpen ? "▾" : "▸")}</span>
+          </div>
         )}
         <div
           className={styles["menu-capsule"]}
@@ -198,7 +221,7 @@ const MenuSection = ({
   );
 };
 
-const SideBar_Proj = ({onMenuSelect}) => {
+const SideBar_Proj = ({ onMenuSelect }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -218,18 +241,18 @@ const SideBar_Proj = ({onMenuSelect}) => {
     console.log("Logging out...");
   };
 
-   const handleClick = (path, label) => {
+  const handleClick = (path, label) => {
     if (path === "/logout") {
       handleLogout();
     } else {
       navigate(path);
       if (onMenuSelect) {
-        onMenuSelect(label);  // Send the label back to parent here
+        onMenuSelect(label);
       }
     }
   };
 
-  const handleCollapse = () => setCollapsed(prev => !prev);
+  const handleCollapse = () => setCollapsed((prev) => !prev);
 
   return (
     <div
@@ -241,7 +264,7 @@ const SideBar_Proj = ({onMenuSelect}) => {
           <div className={styles["sidebar-flex-i"]}>
             <div className={styles["sidebar-logo-wrapper"]}>
               <img src={logo} alt="Gravyn Logo" />
-              {!collapsed && <p>Project Managment</p>}
+              {/* {!collapsed && <p>Gravyn</p>} */}
             </div>
           </div>
         </div>
@@ -268,7 +291,7 @@ const SideBar_Proj = ({onMenuSelect}) => {
                 openSubmenus={openSubmenus}
                 toggleSubmenu={toggleSubmenu}
                 collapsed={collapsed}
-                collapsibleCategory={true} // Enable collapsible category here
+                collapsibleCategory={true}
               />
             ))}
           </div>

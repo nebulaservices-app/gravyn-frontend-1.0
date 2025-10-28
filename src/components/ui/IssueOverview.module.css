@@ -153,9 +153,10 @@
 
 .issue-header-wrapper{
     border-bottom: var(--border-light);
-    height: calc(19% - 20px);
+    height: calc(9% - 20px);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
     position: relative;
     width: 100%;
@@ -180,7 +181,7 @@
 
 .issue-content-wrapper{
     flex: 40;
-    height: calc(80% + 20px);
+    height: calc(91% + 20px);
     width: 100%;
 }
 
@@ -198,8 +199,28 @@
 }
 
 .context-text-wrapper{
-    padding: 15px 20px;
-    width: calc(100% - 40px);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.issue-img-wrapper{
+    height: 18px;
+    width: 18px;
+    padding: 2.5px;
+    background-color: rgba(255, 255, 255, 0.07);
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    justify-content: center;
+    border: var(--border-ultra-light);
+}
+
+
+.issue-img-wrapper img{
+    height: 11px;
+    opacity: 0.75;
 }
 
 .context-text-wrapper > p{
@@ -209,12 +230,13 @@
 .context-text-wrapper .header-heading{
     font-size: 13px;
     font-weight: 500;
+    font-family: Inter;
     letter-spacing: 0 !important;
-    color: white !important;
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .context-text-wrapper .header-subheading{
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.5);
     font-family: Inter !important;
@@ -234,14 +256,13 @@
     display: flex;
     align-items: center;
     position: absolute;
-    bottom: 15px;
-    right: 15px;
+    right: 10px;
     gap:15px;
+    height: 100%;
 }
 
 
 .header-footer-flexer-i .footer-i:first-child{
-
 }
 
 .header-footer-flexer-i .footer-i:nth-child(2){
@@ -249,10 +270,11 @@
     min-height: 26px;
     min-width: 26px;
     border-radius: 100px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 25);
     display: flex;
     align-items: center;
     justify-content: center;
+    display: none !importantD;
 }
 
 .header-footer-flexer-i .footer-i:nth-child(3){
@@ -285,10 +307,8 @@
 }
 
 .header-footer-flexer-i .footer-i:first-child img{
-    height: 22px;
-    min-height: 22px;
-    min-width: 22px;
-    border-radius: 100px;
+    min-height: 15px;
+    min-width: 15px;
 }
 
 .header-footer-flexer-i .footer-i:first-child img:not(:first-child){
@@ -337,6 +357,7 @@
     display: flex;
     align-items: center;
     gap: 25px;
+    height: 100%;
 }
 
 .header-context-capsule:first-child{
@@ -348,8 +369,8 @@
     display: flex;
     align-items: center !important;
     gap: 7px;
+    height: 100%;
     cursor: pointer;
-    padding: 12px 0px;
 }
 
 .header-menu-pill img{

@@ -19,6 +19,8 @@ import ProjectUpdates from "./components/ui/ProjectUpdates";
 import ProjectMilestones from "./components/ui/ProjectMilestones";
 import TasksOverview from "./components/ui/TasksOverview";
 import SchedulingTimeline from './components/ui/SchedulingTimeline';
+import Waitlist from './waitlist/waitlist';
+import ContractEditorMain from './components/features/ContractEditor/ContractEditorMain';
 
 
 function App() {
@@ -43,6 +45,13 @@ function App() {
                     <Route path="/onboard/invite-members" element={<ProtectedRoute element={<OnboardMembers />} />} />
                     <Route path="/login" element={<Login />} />
 
+                    <Route path="/waitlist" element={<Waitlist />} />
+
+
+
+
+
+                    
                     <Route path="/app/project/:projectId/collaborate/" element={<ProtectedRoute element={<ProjectLayout><CollaborationSpace/></ProjectLayout>}/>} />
 
                     <Route path="/app/project/:projectId/calendar-schedule" element={<ProtectedRoute element={<ProjectLayout><CalendarScheduling/></ProjectLayout>}/>} />
@@ -52,7 +61,7 @@ function App() {
                     <Route path="/app/project/:projectId/inbox" element={<ProtectedRoute element={<ProjectLayout><InboxOverview/></ProjectLayout>}/>} />
                     <Route path="/app/project/:projectId/updates" element={<ProtectedRoute element={<ProjectLayout><ProjectUpdates/></ProjectLayout>}/>} />
                     <Route path="/app/project/:projectId/milestones" element={<ProtectedRoute element={<ProjectLayout><ProjectMilestones/></ProjectLayout>}/>} />
-
+                    <Route path="/app/project/:projectId/contracts" element={<ProtectedRoute element={<ProjectLayout><ContractEditorMain/></ProjectLayout>}/>} />
 
 
                     <Route

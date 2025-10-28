@@ -13,7 +13,7 @@ import warning from "../../images/icons/warning.svg";
 import kairo from "../../images/logo/kairo.svg";
 import task from "../../images/icons/tasks_i.svg"
 
-const MenuItemFactory = ({ type, project, isFav, toggleFav, onClick }) => {
+const MenuItemFactory = ({ type, project, isFav, toggleFav, onClick , setKairoVisible }) => {
   switch (type) {
     case "allProjects":
       return (
@@ -52,7 +52,8 @@ const MenuItemFactory = ({ type, project, isFav, toggleFav, onClick }) => {
 
     case "askKairo":
       return (
-        <div className={styles["nav-pill-i"]} onClick={onClick} role="button" tabIndex={0}>
+        <div
+        className={styles["nav-pill-i"]} onClick={onClick} role="button" tabIndex={0}>
           <img src={kairo} alt="Ask Kairo" />
           <p>Ask Kairo</p>
         </div>
@@ -74,7 +75,7 @@ const MenuItemFactory = ({ type, project, isFav, toggleFav, onClick }) => {
   }
 };
 
-const ProjectLayoutNavBar = () => {
+const ProjectLayoutNavBar = ({setKairoVisible}) => {
   const { project } = useProjectContext();
   const [isFav, setIsFav] = useState(false);
   const toggleFav = () => setIsFav((prev) => !prev);
@@ -105,8 +106,10 @@ const ProjectLayoutNavBar = () => {
 
       <div className={styles["nav-capsule"]}>
 
+
+
         {/* {selectedMenu === "timeline" &&  <MenuItemFactory type="task-timeline" onClick={handleAskKairoClick} />} */}
-        <MenuItemFactory type="askKairo" onClick={handleAskKairoClick} />
+        <MenuItemFactory type="askKairo" onClick={()=>{setKairoVisible(true)}} />
       </div>
     </div>
   );

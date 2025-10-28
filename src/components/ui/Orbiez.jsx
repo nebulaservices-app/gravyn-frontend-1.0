@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./Orbies.module.css";
 
 export default function Stars({
-  starCount = 150,
-  spawnMin = 2500,
-  spawnMax = 5200,
+  starCount = 120,
+  spawnMin = 1000,
+  spawnMax = 7000,
 }) {
   const [stars, setStars] = useState([]);
   const [shootingStars, setShootingStars] = useState([]);

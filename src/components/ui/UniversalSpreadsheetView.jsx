@@ -215,11 +215,6 @@ const UniversalSpreadsheetView = ({ data, groupByKey = "status", columns = [], s
                                                         
                                                         </div>
                                                         <div className={styles["spreadsheet-row-i"]}>
-                                                              <div className={styles["properties-v2-wrapper"]}>
-                                                               {item.meta.triaged.triaged === true  && 
-                                                                    <img src={aitriage}/> 
-                                                               }
-                                                            </div>
 
                                                             {item.assignedTo?.users?.map((userId) => {
                                                                     const user = userMap[userId];

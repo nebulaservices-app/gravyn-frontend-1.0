@@ -1,17 +1,24 @@
 // ProjectCreationModalFlow.jsx
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import continuous from "../../images/graphics/continuous1.png";
-import terminal from "../../images/graphics/terminal.png";
+import continuous from "../../../images/graphics/continuous1.png";
+import terminal from "../../../images/graphics/terminal.png";
 import styles from "./ProjectCreationModalFlow.module.css";
-import info from "../../images/icons/info.svg";
-import calendar from "../../images/icons/calendar.svg";
-import add from "../../images/icons/add.svg";
-import { getUserById, getUserNameAndImageById } from "../../service/User/UserFetcher";
-import dot from "../../images/icons/dot.svg"
-import phase from "../../images/icons/phases.svg"
-import warning from "../../images/icons/warning.svg"
-import {formatFullDate, formatToShortDate} from "../../utils/datetime"
+import info from "../../../images/icons/info.svg";
+import calendar from "../../../images/icons/calendar.svg";
+import add from "../../../images/icons/add.svg";
+import { getUserById, getUserNameAndImageById } from "../../../service/User/UserFetcher";
+import dot from "../../../images/icons/dot.svg"
+import phase from "../../../images/icons/phases.svg"
+import warning from "../../../images/icons/warning.svg"
+import {formatFullDate, formatToShortDate} from "../../../utils/datetime"
+import kairo from "../../../images/icons/kairo.svg"
+import Orbiez from "../../ui/Orbiez"
+import arrow from "../../../images/icons/arrow.svg"
+import InfoTip from "../../InfoTip";
+import { ObjectId } from "bson";
+
+import StepClientConfig, { ClientInvitePortal } from "./StepClientCommericals";
 
 /* ------------------------ Data -------------------------- */
 const TEMPLATE_CARDS = {
@@ -26,6 +33,7 @@ const TEMPLATE_CARDS = {
     { key: "growth_loop", title: "Growth Loop", subtitle: "Monthly experiments" },
   ],
 };
+
 
 
 
@@ -118,15 +126,7 @@ const TEMPLATE_LIBRARY = {
   },
 };
 
-/* ----------------------- Utilities ----------------------- */
-function InfoTip({ text }) {
-  return (
-    <span className={styles.tip} role="tooltip" aria-label={text}>
-      <span className={styles.tipIcon}><img src={info} alt="" /></span>
-      <span className={styles.tipBubble}>{text}</span>
-    </span>
-  );
-}
+
 function formatPrettyDate(iso) {
   if (!iso) return "";
   try {
@@ -322,6 +322,28 @@ function PillStepper({ step, setStep, total = 4, ariaLabel = "Project creation s
   );
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const generateNewProjectId = () => {
+    return new ObjectId();
+  }
+
+
 /* ---------------------- Root Modal ---------------------- */
 export default function ProjectCreationModalFlow({ onClose, onCreate }) {
   const [step, setStep] = useState(0);
@@ -339,48 +361,116 @@ export default function ProjectCreationModalFlow({ onClose, onCreate }) {
 
   const [cal, setCal] = useState(null);
 
+
+  //ProjectId for the project will be installed here...
+  const [projectId, setProjectId] = useState(null);
+
+  useEffect(() => {
+    if (!projectId) {
+      setProjectId(generateNewProjectId()); // generate once
+    }
+  }, [projectId]);
+
+
+
+
+  
+
   const [members, setMembers] = useState([]); // [{ userId, name, picture, role }]
   const [openMembers, setOpenMembers] = useState(false);
 
-  const canNext = useMemo(() => {
-    if (step === 0) {
-      const nameOk = name.trim().length >= 3;
-      const dateOk =
-        kind === "contiguous" ||
-        !startDate ||
-        (!endDate && !ongoing) ||
-        (startDate && endDate && new Date(startDate) <= new Date(endDate));
-      return !!kind && nameOk && dateOk;
-    }
-    return true;
-  }, [step, kind, name, startDate, endDate, ongoing]);
 
-  const next = () => setStep((s) => Math.min(s + 1, 3));
-  const back = () => setStep((s) => Math.max(s - 1, 0));
 
-  const handleCreate = () => {
-    const payload = {
-      kind,
-      isClient,
-      template: template || null,
-      basics: {
-        name: name.trim(),
-        description: description.trim(),
-        startDate: startDate || null,
-        endDate: kind === "contiguous" ? null : (endDate || null),
-        ongoing: kind === "contiguous" || ongoing,
-      },
-      members: members.map(({ userId, role }) => ({ userId, role })),
-    };
-    onCreate?.(payload);
-    onClose?.();
+
+
+  // state (group with other useState)
+const [clientInvolved, setClientInvolved] = useState(false);
+const [budget, setBudget] = useState('');
+const [currency, setCurrency] = useState('INR');
+const [inviteLinks, setInviteLinks] = useState([{ label: 'Primary', url: '' }]);
+const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC');
+const [extraInfo, setExtraInfo] = useState('');
+
+
+// stepper: increase total, insert at index 2
+<PillStepper step={step} setStep={setStep} total={5} />
+
+// canNext: basic validation for this step
+const canNext = useMemo(() => {
+  if (step === 0) {
+    const nameOk = name.trim().length >= 3;
+    const dateOk =
+      kind === "contiguous" ||
+      !startDate ||
+      (!endDate && !ongoing) ||
+      (startDate && endDate && new Date(startDate) <= new Date(endDate));
+    return !!kind && nameOk && dateOk;
+  }
+  if (step === 2) {
+    if (!clientInvolved) return true;
+    const budgetOk = budget !== '' && Number(budget) >= 0;
+    const currencyOk = !!currency;
+    const invitesOk = inviteLinks.every(l => !l.url || /^https?:\/\//i.test(l.url));
+    return budgetOk && currencyOk && invitesOk;
+  }
+  return true;
+}, [step, kind, name, startDate, endDate, ongoing, clientInvolved, budget, currency, inviteLinks]);
+
+// top-level: remove the stray PillStepper placed near the state block
+
+// in the header section:
+<PillStepper step={step} setStep={setStep} total={5} />
+
+const next = () => setStep((s) => Math.min(s + 1, 4));
+const back = () => setStep((s) => Math.max(s - 1, 0));
+
+
+const handleCreate = () => {
+  const payload = {
+    kind,
+    isClient,
+    template: template || null,
+    basics: {
+      name: name.trim(),
+      description: description.trim(),
+      startDate: startDate || null,
+      endDate: kind === "contiguous" ? null : (endDate || null),
+      ongoing: kind === "contiguous" || ongoing,
+    },
+    clientConfig: {
+      involved: clientInvolved,
+      budget: clientInvolved ? Number(budget) : null,
+      currency: clientInvolved ? currency : null,
+      invites: inviteLinks.filter(l => l.url?.trim()),
+      timezone,
+      notes: extraInfo.trim() || null,
+    },
+    members: members.map(({ userId, role }) => ({ userId, role })),
   };
+  onCreate?.(payload);
+  onClose?.();
+};
+
 
   function openCalendar(nextPayload) { setCal(nextPayload); }
   function closeCalendar() { setCal(null); }
 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true" aria-labelledby="pcm_title">
+      {/* <ClientInvitePortal/> */}
+      <div className={styles['overlay-header']}>
+          <div onClick={onClose} className={styles['overlay-header-i']}>
+
+            <img style={{
+              transform : 'rotateY(-180deg)'
+            }} src={arrow}/>
+            <p>Go back to workspace</p>
+          </div>
+          <div className={styles['overlay-header-i']}>
+      
+          </div>
+      </div>
+
       {openMembers && (
         <AddMembersByIdsModal
           userIds={WORKSPACE_MEMBERS}
@@ -412,7 +502,7 @@ export default function ProjectCreationModalFlow({ onClose, onCreate }) {
       >
         <header className={styles["modal-header"]}>
           <div className={styles["modal-header-i"]}>
-            <p>Create a project</p>
+            {/* <p>Create a project</p> */}
             <p>Set up a project built for how the work really happens</p>
             <p>Choose a structure that matches the timeline, add goals and milestones, and start with sensible defaults—everything stays fully editable as the project evolves.</p>
           </div>
@@ -457,13 +547,28 @@ export default function ProjectCreationModalFlow({ onClose, onCreate }) {
               </motion.div>
             )}
 
-            {step === 2 && (
+
+  {step === 2 && (
+    <motion.div key="client-config" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }}>
+      <StepClientConfig
+        clientInvolved={clientInvolved} setClientInvolved={setClientInvolved}
+        budget={budget} setBudget={setBudget}
+        currency={currency} setCurrency={setCurrency}
+        inviteLinks={inviteLinks} setInviteLinks={setInviteLinks}
+        timezone={timezone} setTimezone={setTimezone}
+        extraInfo={extraInfo} setExtraInfo={setExtraInfo}
+        projectId={projectId}
+      />
+    </motion.div>
+  )}
+
+            {step === 3 && (
               <motion.div key="structure" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }}>
                 <StepStructure kind={kind} template={template} projectTitle={name} projectDescription={description} projectStartDate={startDate} projectEndDate={endDate}/>
               </motion.div>
             )}
 
-            {step === 3 && (
+            {step === 4 && (
               <motion.div key="review" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }}>
                 <StepReview
                   kind={kind}
@@ -481,8 +586,8 @@ export default function ProjectCreationModalFlow({ onClose, onCreate }) {
 
         <footer className={styles.footer}>
           <div className={styles.ghostBtn} onClick={back} aria-disabled={step === 0}>Back</div>
-          {step < 3 && <div className={styles.primaryBtn} onClick={next} aria-disabled={!canNext}>Continue</div>}
-          {step === 3 && <div className={styles.primaryBtn} onClick={handleCreate}>Create Project</div>}
+          {step < 4 && <div className={styles.primaryBtn} onClick={next} aria-disabled={!canNext}>Continue</div>}
+          {step === 4 && <div className={styles.primaryBtn} onClick={handleCreate}>Create Project</div>}
         </footer>
       </motion.div>
     </div>
@@ -508,6 +613,10 @@ function StepTypeAndBasics({
   return (
     <div className={styles.grid}>
       <section className={styles["modal-section"]}>
+
+              <div className={styles['grid-header']}>
+        <p>Provide details about project to proceed.</p>
+      </div>
         <div className={styles["modal-title"]}>
           <p>
             Provide project details{" "}
@@ -1037,10 +1146,14 @@ function PhaseGraphic({
               </p>
             </div>
             <div className={styles["modal-title-action-wrapper"]}>
-              <div onClick={openNewPhaseModal} className={`${styles["img"]} ${styles["img-add"]}`}>
+              <div title="AI analyze & generate" onClick={analyzeAndSeedFromAI} className={`${styles['kairo-btn']} ${aiLoading ? styles['generating'] : styles['']}`}>
+                <img src={kairo}/>
+                <p>{!aiLoading ? "Generate Using KairoAI" : "Generating...."}</p>
+              </div>
+              <div title="Add phases" onClick={openNewPhaseModal} className={`${styles["img"]} ${styles["img-add"]}`}>
                 <img src={add} alt="" />
               </div>
-              <div className={`${styles["img"]} ${styles["img-dot"]}`} onClick={analyzeAndSeedFromAI} title="AI analyze & generate">
+              <div title="View More Options" className={`${styles["img"]} ${styles["img-dot"]}`} >
                 <img src={dot} alt="" />
               </div>
             </div>
@@ -1480,3 +1593,6 @@ function AddMembersByIdsModal({ userIds = [], initialSelected = [], onClose, onS
     </div>
   );
 }
+
+
+

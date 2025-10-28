@@ -409,12 +409,8 @@ const HomePage = () => {
 
                     </div>
 
-                    <div
-                        className={styles['hero-banner-parent-wrapper']}>
-                        <div
-
-
-                            className={styles['hero-banner-wrapper']}>
+                    <div className={styles['hero-banner-parent-wrapper']}>
+                        <div className={styles['hero-banner-wrapper']}>
                             <img
 
                                 className={styles['hero-banner-image']} src={hero_banner}/>

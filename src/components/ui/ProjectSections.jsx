@@ -1,8 +1,9 @@
 import React from "react"
-import styles from "./ProjectSections.module.css";
+import styles from "./DashboardOverview.module.css";
 import updates from "../../images/icons/update.svg";
 import {formatFullDate} from "../../utils/datetime";
 import stars from "../../images/icons/ai_stars.svg"
+import gravynLogo from "../../images/icons/gravyn.svg"
 
 const ProjectSections = ({update , project}) => {
     return (
@@ -17,16 +18,23 @@ const ProjectSections = ({update , project}) => {
                                 dangerouslySetInnerHTML={{__html: section.summary}}
                             />
                         </div>
+
                     ))}
 
+                    {/* <div className={styles['project-update-ai-wrapper']}>
 
-                        {/*<div className={styles['ai-suggestion']}>*/}
-                        {/*    <p>NEBULA SUGGESTIONS <img src={stars}/> </p>*/}
-                        {/*    {update.content?.aisuggestion && (*/}
-                        {/*        <div dangerouslySetInnerHTML={{__html: update.content.aisuggestion}}/>*/}
-                        {/*    )}*/}
+                        <div className={styles['gravyn-pill']}><img src={gravynLogo}/><p>Gravyn Suggests</p></div>
 
-                        {/*</div>*/}
+                        {update.content?.aisuggestion && (
+                                 <div 
+                                 className={styles['project-update-ai']}
+                                 dangerouslySetInnerHTML={{__html: update.content.aisuggestion}}/>
+                         )}
+
+                    </div> */}
+
+
+      
 
                 </div>
             )}

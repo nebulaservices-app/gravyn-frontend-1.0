@@ -1,28 +1,4 @@
-.galaxy-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-.login-bg{
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    width: 100vw;
-    opacity: 0.5;
-    height: 100vh;
-    animation: prakat 3s forwards;
-}
 
-
-@keyframes prakat {
-    0%{
-        opacity: 0;
-    }
-    100%{
-        opacity:0.6;
-    }
-}
 
 .parent-wrapper{
     display: flex;
@@ -33,27 +9,72 @@
 }
 .login-modal{
     min-height: 60vh;
-    min-width: 30vw;
-    padding: 20px;
+    width: 24vw;
+    min-width: 15vw;
+    padding: 50px 50px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
+    border : var(--border-ultra-light);
+    background: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(5px);
 }
 
-.light-rays-container {
+
+.login-header{
     width: 100%;
-    height: 100%;
-    position: relative;
-    pointer-events: none;
-    z-index: 3;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.squares-canvas {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block;
-    position: absolute;
-    background: red !important;
+
+.login-header-title{
+    font-size: 16px !important;
+    font-weight: 600;
+    font-family: Poppins;
+    margin-top: 15px;
+    letter-spacing: -0.5px;
+}
+
+.login-header p:last-child{
+
+       font-size: 12.5px !important;
+    font-weight: 500;
+    margin-top: 7px;
+    color: grey;
+    letter-spacing: -0.25px;
+}
+
+
+.login-header img{
+    height: 40px;
+}
+
+
+.login-content-wrapper{
+    margin : 30px 0;
+    margin-top: 70px !important;
+}
+
+.sign-btn{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: calc(100% - 28px);
+    padding: 12px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.sign-btn img{
+    height: 16px;
+}
+
+.sign-btn p {
+    font-size: 13px;
+    letter-spacing: -0.25px;
+}
+
+.sign-btn:not(:first-child){
+    margin-top: 10px;
 }

@@ -29,7 +29,10 @@ import {getUserById} from "../../service/User/UserFetcher";
 import aiTriageService from "../../service/AiTriage/aiTriageService.js";
 import {SnackbarProvider, useSnackbar} from "../../context/SnackbarProvider";
 import ProjectLayoutNavBar from "../templates/ProjectLayoutNavBar.jsx"
-import ProjectCreationModalFlow from '../flows/projectCreationModalFlow.jsx'
+import ProjectCreationModalFlow from '../flows/projectCreation/projectCreationModalFlow.jsx'
+import { Kairo } from "../features/Kairo.jsx";
+import { AiOverlay } from "../../views/Dashboard/Dashboard.jsx";
+import { KairoInterface } from "../features/Kairo/kairo.main.jsx";
 
 const TierModal = ({user , championTierVisibility , setChampionTierVisibility}) =>{
 
@@ -974,7 +977,11 @@ const ProjectLayout = ({
         if (tier === 'champion') {
             setChampionTierVisibility(true)
         }
+
     }
+
+    const [kairoVisible, setKairoVisible] = useState(false);
+
 
     const views = [
         {icon: require("../../images/icons/kanban.svg"), label: "Kanban"},
@@ -1073,6 +1080,10 @@ const ProjectLayout = ({
     }
 
 
+    //Kairo
+
+
+
 
 
 
@@ -1097,14 +1108,18 @@ const ProjectLayout = ({
     }, [project?._id, project?.aiTriage?.enabled]);
     
 
-    const [open , setOpen] = useState(true)
-
-
+    const [open , setOpen] = useState(false)
+    const handleOnClose = () => {
+        setOpen(false)
+    }
 
     return (
         <SnackbarProvider>
             <div className={styles['page-wrapper']}>
-                            <ProjectCreationModalFlow/>
+                {/* <Kairo/> */}
+                {
+                    open && <ProjectCreationModalFlow onClose={handleOnClose}/>}
+                           
                 <SideBar_Proj onMenuSelect={handleMenuSelection}/>
                 <div className={styles['page-content-parent-wrapper']}>
                     <div className={styles['page-content-children-wrapper']}>
@@ -1112,8 +1127,8 @@ const ProjectLayout = ({
 
                         <nav className={styles['page-navbar-wrapper']}>
                             <div className={styles['navbar-flex-item']}>
-                                <div className={styles['workspace-pill']}>
-                                    <div className={styles['workspace-pill-img-wrapper']}>
+                                <div onClick={()=>{setOpen(true)}} className={styles['workspace-pill']}>
+                                    <div  className={styles['workspace-pill-img-wrapper']}>
                                         {workspaceData?.img ? (
                                             <img
                                                 className={styles['workspace-pill-img']}
@@ -1156,12 +1171,14 @@ const ProjectLayout = ({
                         </nav>
 
 
-                        {menu !== "Messages" && <ProjectLayoutNavBar/>}
+                        {menu !== "Messages" && <ProjectLayoutNavBar setKairoVisible={setKairoVisible}/>}
 
                         <div className={styles['project-layout-children-wrapper']}>
+                            {kairoVisible && <KairoInterface onClose={()=>{setKairoVisible(false)}} user={user} setKairoVisible={setKairoVisible}/>}
                             {children}
                         </div>
                     </div>
+                    
                 </div>
 
                 <DriftIQModal
@@ -1182,8 +1199,13 @@ const ProjectLayout = ({
                                setChampionTierVisibility={setChampionTierVisibility}/>
                 }
 
+
+
                 {/*<SnackbarSimulator/>*/}
             </div>
+
+
+
         </SnackbarProvider>
     );
 };

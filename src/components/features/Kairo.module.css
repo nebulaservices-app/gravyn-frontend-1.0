@@ -189,13 +189,17 @@
 /* === Rich Text HTML Elements === */
 
 .kairo-card{
+    color: white;
+}
 
+.kairo-card div{
 }
 
 .kairo-card p{
     font-size: 14px;
     font-family: Inter, 'sans-serif';
     letter-spacing: 0;
+    color: white;
     line-height: 1.6;
 }
 

@@ -33,7 +33,7 @@
 }
 
 .sidebar-logo-wrapper img {
-  height: 15px;
+  height: 18px;
   user-select: none;
   pointer-events: none;
 }
@@ -41,8 +41,8 @@
 .sidebar-logo-wrapper p {
   margin: 0;
   font-family: Poppins, 'sans-serif';
-  font-weight: 600;
-  font-size: 13px;
+  font-weight: 500;
+  font-size: 14px;
   color: white;
   user-select: none;
   white-space: nowrap;
@@ -101,15 +101,23 @@
 
 /* Section titles */
 .menu-type-title {
-  font-size: 12.5px;
+  font-size: 11px;
   color: grey;
-  font-family: Poppins, 'sans-serif';
+  font-family: Inter, 'sans-serif';
   font-weight: 500;
-  text-transform: capitalize;
-  margin: 0px 0 7px 12px;
-  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  margin: 0px 0 7px 7px;
   font-family: Poppins;
+  width: 100%;
   user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+
+.menu-type-title p{
+  color: rgba(255, 255, 255, 0.65);
 }
 
 /* Hide section titles when collapsed */
@@ -146,14 +154,14 @@
 
 /* Menu icons styling */
 .menu-item-i img {
-  height: 12.75px;
+  height: 12px;
   opacity: 0.6;
   transition: opacity 0.3s;
   user-select: none;
 }
 
 .menu-item-i p{
-    font-size: 12.75px;
+    font-size: 12px;
     font-weight: 500 !important;
 }
 
@@ -196,9 +204,12 @@
   top: 0;
   bottom: 0;
   width: 0.75px;
-  background-color: rgba(255, 255, 255, 0.15);
+  background : linear-gradient(to bottom , rgba(255, 255, 255, 0.01) , rgba(255, 255, 255, 0.25) , rgba(255, 255, 255, 0.01));
   border-radius: 2px;
+  transition: all 0.3s;
 }
+
+
 
 /* Submenu item styling (with indentation for better alignment) */
 .submenu-item {

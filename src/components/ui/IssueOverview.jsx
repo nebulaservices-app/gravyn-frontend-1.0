@@ -3,7 +3,7 @@ import styles from "./IssueOverview.module.css";
 import useProjectContext from "../../hook/useProjectContext";
 import { fetchIssues, updateIssue } from "../../service/Issues/issuesService";
 import { updateAITriageConfig } from "../../service/aiTriageService";
-
+import issueIcon from "../../images/icons/issues.svg"
 // --- Icons ---
 import downarrow from "../../images/icons/downarrow.svg";
 import kairo from "../../images/logo/kairo.svg";
@@ -373,61 +373,67 @@ const IssuesOverview = ({ onCreateIssue }) => {
                     <div className={styles['issue-main-i-content-wrapper']}>
 
                     {/* Header */}
-                    <div className={styles["issue-header-wrapper"]}>
-                             <div className={styles["context-text-wrapper"]}>
-                                <p className={styles["header-heading"]}>Issues Overview</p>
-                                <p className={styles["header-subheading"]}>
-                                    Track, triage, and manage all project issues in one centralized view.
-                                </p>
-                            </div>
-                            <div className={styles["header-context-footer"]}>
-                                <div className={styles["header-context-capsule"]}>
-                                    <div className={`${styles["header-menu-pill"]} ${activeView === "kanban" ? styles["active"] : ""}`}
-                                         onClick={() => setActiveView("kanban")}>
-                                        <img src={kanban} />
-                                        <p className={styles["menu-pill-text"]}>Kanban</p>
-                                    </div>
-                                    <div className={`${styles["header-menu-pill"]} ${activeView === "spreadsheet" ? styles["active"] : ""}`}
-                                         onClick={() => setActiveView("spreadsheet")}>
-                                        <img src={spreadsheet} />
-                                        <p className={styles["menu-pill-text"]}>Spreadsheet</p>
-                                    </div>
-                                    <div className={`${styles["header-menu-pill"]} ${activeView === "calendar" ? styles["active"] : ""}`}
-                                         onClick={() => setActiveView("calendar")}>
-                                        <img src={calendar} />
-                                        <p className={styles["menu-pill-text"]}>Calendar</p>
-                                    </div>
-                                </div>
-                                <div className={styles["header-footer-flexer-i"]}>
-                                    <div className={styles["footer-i"]}>
-                                        {project?.teamMembers?.length > 0 ? (
-                                            project.teamMembers.map((person, index) => (
-                                                <img key={index} src={person.picture} alt={person.name || ""} />
-                                            ))
-                                        ) : (
-                                            <span className={styles["no-participants"]}>No participants</span>
-                                        )}
-                                    </div>
-                                    <div className={styles["footer-i"]}>
-                                        <img src={add} />
-                                    </div>
-                                    <div className={styles["footer-i"]}></div>
-                                    <div className={styles["footer-i"]}>
-                                        <img src={sync} />
-                                    </div>
-                                    <div className={styles["footer-i"]}>
-                                        <img src={dotIcon} />
-                                    </div>
-                                    <div
-                                        className={styles["footer-i"]}
-                                        onClick={openIssueModal}
-                                    >
-                                        Raise an issue
-                                    </div>
-                                </div>
-                            </div>
-                       
-                    </div>
+<div className={styles["issue-header-wrapper"]}>
+    <div className={styles["context-text-wrapper"]}>
+      <div className={styles['issue-img-wrapper']}>
+        <img src={issueIcon}/>
+      </div>
+      <p className={styles["header-heading"]}>Issues Overview</p>
+    </div>
+    <div className={styles["header-footer-flexer-i"]}>
+      <div className={styles["header-context-capsule"]}>
+        {/* Pills for view switch */}
+        <div
+          className={`${styles["header-menu-pill"]} ${activeView === "kanban" ? styles["active"] : ""}`}
+          onClick={() => setActiveView("kanban")}
+          role="button"
+          tabIndex={0}
+        >
+          <img src={kanban} alt="Kanban" />
+          <p className={styles["menu-pill-text"]}>Kanban</p>
+        </div>
+        <div
+          className={`${styles["header-menu-pill"]} ${activeView === "spreadsheet" ? styles["active"] : ""}`}
+          onClick={() => setActiveView("spreadsheet")}
+          role="button"
+          tabIndex={0}
+        >
+          <img src={spreadsheet} alt="Spreadsheet" />
+          <p className={styles["menu-pill-text"]}>Spreadsheet</p>
+        </div>
+        <div
+          className={`${styles["header-menu-pill"]} ${activeView === "calendar" ? styles["active"] : ""}`}
+          onClick={() => setActiveView("calendar")}
+          role="button"
+          tabIndex={0}
+        >
+          <img src={calendar} alt="Calendar" />
+          <p className={styles["menu-pill-text"]}>Calendar</p>
+        </div>
+      </div>
+
+      {/* Footer icons */}
+      <div className={styles["footer-i"]}>
+        {/* <img src={add} alt="Add" /> */}
+      </div>
+      <div className={styles["footer-i"]}></div>
+      <div className={styles["footer-i"]}>
+        <img src={sync} alt="Sync" />
+      </div>
+      <div className={styles["footer-i"]}>
+        <img src={dotIcon} alt="Options" />
+      </div>
+      <div
+        className={styles["footer-i"]}
+        onClick={openIssueModal}
+        role="button"
+        tabIndex={0}
+      >
+        Raise an issue
+      </div>
+    </div>
+</div>
+
 
                     {/* Issue Content */}
                     <div className={styles["issue-content-wrapper"]}>

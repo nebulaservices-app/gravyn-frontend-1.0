@@ -1,0 +1,19 @@
+// utils/fileKinds.js
+export const IMAGE_EXTS = ["jpg","jpeg","png","gif","webp","svg","bmp","tiff","avif"];
+export const VIDEO_EXTS = ["mp4","webm","mov","ogg","mkv"];
+export const AUDIO_EXTS = ["mp3","wav","ogg","aac","flac"];
+export const DOC_EXTS   = ["pdf","txt","md","csv","log"];
+
+export const getExtFromName = (name = "") => name.split(".").pop()?.toLowerCase() || "";
+export const getExtFromMime = (type = "") => type.split("/").pop()?.toLowerCase() || "";
+
+export const kindOf = (name = "", type = "") => {
+  const ext = getExtFromName(name) || getExtFromMime(type);
+  if (IMAGE_EXTS.includes(ext)) return "image";
+  if (DOC_EXTS.includes(ext)) return ext === "pdf" ? "pdf" : "text";
+  if (VIDEO_EXTS.includes(ext)) return "video";
+  if (AUDIO_EXTS.includes(ext)) return "audio";
+  return "other";
+};
+
+export const canInlinePreview = (k) => ["image","pdf","text","video","audio"].includes(k);
